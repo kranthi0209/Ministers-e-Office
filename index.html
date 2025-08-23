@@ -505,8 +505,8 @@
     <div class="kpi"><div class="label">Files Received</div><div class="value" id="k_recv">-</div><div class="delta" id="k_recv_hint"></div></div>
     <div class="kpi"><div class="label">Files Processed</div><div class="value" id="k_proc">-</div><div class="delta" id="k_proc_hint"></div></div>
     <div class="kpi"><div class="label">Closing Balance</div><div class="value" id="k_close">-</div><div class="delta" id="k_close_hint"></div></div>
-    <div class="kpi"><div class="label">Avg Processing Time</div><div class="value" id="k_avg">-</div><div class="delta">(of files processed in range)</div></div>
-    <div class="kpi"><div class="label">Median Processing Time</div><div class="value" id="k_med">-</div><div class="delta">(of files processed in range)</div></div>
+    <div class="kpi"><div class="label">Avg Processing Time</div><div class="value" id="k_avg">-</div><div class="delta">(of files processed in selected date range)</div></div>
+    <div class="kpi"><div class="label">Median Processing Time</div><div class="value" id="k_med">-</div><div class="delta">(of files processed in selected date range)</div></div>
   </div>
 </section>
 
@@ -536,18 +536,24 @@
     <section class="grid">
       <table>
         <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Post (at time)</th>
-            <th class="number">Opening</th>
-            <th class="number">Received</th>
-            <th class="number">Processed</th>
-            <th class="number">Closing</th>
-            <th class="number">Avg Time</th>
-            <th class="number">Median Time</th>
-            <th class="number">Active Files</th>
-          </tr>
-        </thead>
+  <tr>
+    <th>Employee</th>
+    
+    <th class="number">Opening</th>
+    <th class="number">Received</th>
+    <th class="number">Processed</th>
+    <th class="number">Closing</th>
+    <th class="number">Avg Time</th>
+    <th class="number">Median Time</th>
+    <th class="number">Active Files</th>
+    <th class="number">Pending >7d</th>
+    <th class="number">Pending >15d</th>
+    <th class="number">Pending >30d</th>
+    <th class="number">Pending >60d</th>
+    <th class="number">Pending >90d</th>
+    <th class="number">Pending >120d</th>
+  </tr>
+</thead>
         <tbody id="tbody"></tbody>
       </table>
       <div class="footer">
@@ -794,95 +800,162 @@ function applyFilters(){
 
 
 
-    function aggregateByEmployee(list, sDate, eDate){
-      const map = new Map();
-      for(const it of list){
-        const key = `${it.holder}|||${it.postName}|||${it.orgUnit}`;
-        if(!map.has(key)) map.set(key, {employee:it.holder, post:it.postName, org:it.orgUnit, intervals:[]});
-        map.get(key).intervals.push(it);
-      }
+    function fmtDuration(ms) {
+  if (!isFinite(ms)) return '';
+  let totalMins = Math.floor(ms / (1000 * 60));
+  const days = Math.floor(totalMins / (60 * 24));
+  totalMins %= 60 * 24;
+  const hrs = Math.floor(totalMins / 60);
+  const mins = totalMins % 60;
 
-      const rows = [];
-      for(const [k,obj] of map){
-        const ints = obj.intervals;
-        // Opening: intervals started before sDate and not ended before sDate
-        let opening = 0, received = 0, processed = 0, closing = 0;
-        const procdDurations = [];
-        let activeNow = 0;
-        for(const iv of ints){
-          const st = iv.start, en = iv.end;
-          const startedBefore = sDate ? (st && st < sDate) : false;
-          const endsBefore = sDate ? (en && en < sDate) : false;
-          const overlapsStart = sDate ? (st && !endsBefore && (startedBefore || st <= sDate)) : false;
-          if(sDate && overlapsStart) opening++;
-          if(sDate && eDate){
-            if(st && st >= sDate && st <= eDate) received++;
-            if(en && en >= sDate && en <= eDate){
-              processed++;
-              const durH = hours(en - st);
-              if(isFinite(durH)) procdDurations.push(durH);
-            }
-          }
-          // Active files (no end yet) or still active by eDate
-          const stillActive = (!en) || (eDate && en > eDate);
-          const activeOverlap = eDate ? (st && st <= eDate && stillActive) : stillActive;
-          if(activeOverlap) activeNow++;
+  let parts = [];
+  if (days) parts.push(`${days}D`);
+  if (hrs) parts.push(`${hrs}H`);
+  if (mins) parts.push(`${mins}M`);
+  return parts.length ? parts.join(' ') : '0M';
+}
+
+function aggregateByEmployee(list, sDate, eDate){
+  const map = new Map();
+  for(const it of list){
+    const key = `${it.holder}`;
+    if(!map.has(key)) map.set(key, {employee:it.holder, intervals:[]});
+    map.get(key).intervals.push(it);
+  }
+
+  const rows = [];
+  const now = new Date();
+
+  for(const [k,obj] of map){
+    const ints = obj.intervals;
+    let opening = 0, received = 0, processed = 0, closing = 0;
+    const procdDurations = [];
+    let activeNow = 0;
+
+    // pending buckets
+    let p7=0, p15=0, p30=0, p60=0, p90=0, p120=0;
+
+    for(const iv of ints){
+      const st = iv.start, en = iv.end;
+      const startedBefore = sDate ? (st && st < sDate) : false;
+      const endsBefore = sDate ? (en && en < sDate) : false;
+      const overlapsStart = sDate ? (st && !endsBefore && (startedBefore || st <= sDate)) : false;
+      if(sDate && overlapsStart) opening++;
+      if(sDate && eDate){
+        if(st && st >= sDate && st <= eDate) received++;
+        if(en && en >= sDate && en <= eDate){
+          processed++;
+          const durMs = en - st;
+          if(isFinite(durMs)) procdDurations.push(durMs);
         }
-        const avg = procdDurations.length ? procdDurations.reduce((a,b)=>a+b,0)/procdDurations.length : NaN;
-        const med = procdDurations.length ? median(procdDurations) : NaN;
-        closing = opening + received - processed;
-        rows.push({employee:obj.employee, post:obj.post, org:obj.org, opening, received, processed, closing, avg, med, activeNow, intervals:ints});
       }
-      // sort by processed desc
-      rows.sort((a,b)=> b.processed - a.processed || a.employee.localeCompare(b.employee));
-      return rows;
+      // ---- Active files (independent of date range) ----
+      if(!en) activeNow++;
+
+      // ---- Pending bucket logic (only unsent = no end) ----
+      if(!en && st){
+        const days = (now - st) / (1000*60*60*24);
+        if (days > 7 && days <= 15) p7++;
+        else if (days > 15 && days <= 30) p15++;
+        else if (days > 30 && days <= 60) p30++;
+        else if (days > 60 && days <= 90) p60++;
+        else if (days > 90 && days <= 120) p90++;
+        else if (days > 120) p120++;
+      }
     }
 
-    const median = (arr)=>{
-      const a = [...arr].sort((x,y)=>x-y); const n = a.length; if(!n) return NaN; const m = Math.floor(n/2); return n%2? a[m] : (a[m-1]+a[m])/2;
-    };
+    // avg & median in ms (keep raw numbers)
+    const avgMs = procdDurations.length ? procdDurations.reduce((a,b)=>a+b,0)/procdDurations.length : NaN;
+    const medMs = procdDurations.length ? median(procdDurations) : NaN;
 
-    function render(rows, sDate, eDate){
-      const tbody = $('#tbody');
-      tbody.innerHTML = '';
-      let totOpen=0, totRecv=0, totProc=0, totClose=0; const allDur=[];
-      for(const r of rows){
-        totOpen+=r.opening; totRecv+=r.received; totProc+=r.processed; totClose+=r.closing; if(isFinite(r.avg)) allDur.push(...r.intervals.filter(iv=>iv.end && (!sDate || iv.end>=sDate) && (!eDate || iv.end<=eDate)).map(iv=>hours(iv.end-iv.start)));
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-  <td data-label="Employee"><span class="link">${r.employee}</span><div class="sub">${r.org}</div></td>
-  <td data-label="Post"><span class="tag">${r.post||'-'}</span></td>
+    closing = opening + received - processed;
+
+    rows.push({
+      employee: obj.employee,
+      
+      opening, received, processed, closing,
+      avg: avgMs,
+      med: medMs,
+      activeNow,
+      p7, p15, p30, p60, p90, p120,
+      intervals: ints
+    });
+  }
+
+  rows.sort((a,b)=> b.avg - a.avg || a.employee.localeCompare(b.employee));
+  return rows;
+}
+
+const median = (arr)=>{
+  const a = [...arr].sort((x,y)=>x-y); 
+  const n = a.length; 
+  if(!n) return NaN; 
+  const m = Math.floor(n/2); 
+  return n%2? a[m] : (a[m-1]+a[m])/2;
+};
+
+function render(rows, sDate, eDate){
+  const tbody = $('#tbody');
+  tbody.innerHTML = '';
+  let totOpen=0, totRecv=0, totProc=0, totClose=0; 
+  const allDur=[];
+
+  for(const r of rows){
+    totOpen+=r.opening; 
+    totRecv+=r.received; 
+    totProc+=r.processed; 
+    totClose+=r.closing; 
+
+    if(isFinite(r.avg)) {
+      allDur.push(...r.intervals
+        .filter(iv=>iv.end && (!sDate || iv.end>=sDate) && (!eDate || iv.end<=eDate))
+        .map(iv=>iv.end - iv.start));
+    }
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+  <td data-label="Employee"><span class="link">${r.employee}</span></td>
   <td data-label="Opening" class="number">${fmt(r.opening)}</td>
   <td data-label="Received" class="number">${fmt(r.received)}</td>
   <td data-label="Processed" class="number">${fmt(r.processed)}</td>
   <td data-label="Closing" class="number">${fmt(r.closing)}</td>
-  <td data-label="Avg Time" class="number">${toHH(r.avg)}</td>
-  <td data-label="Median Time" class="number">${toHH(r.med)}</td>
-  <td data-label="Active Files" class="number">${fmt(r.activeNow)}</td>
+  <td data-label="Avg Time" class="number">${isFinite(r.avg) ? fmtDuration(r.avg) : ''}</td>
+  <td data-label="Median Time" class="number">${isFinite(r.med) ? fmtDuration(r.med) : ''}</td>
+  <td data-label="Active" class="number">${fmt(r.activeNow)}</td>
+  <td data-label=">7d" class="number">${fmt(r.p7)}</td>
+  <td data-label=">15d" class="number">${fmt(r.p15)}</td>
+  <td data-label=">30d" class="number">${fmt(r.p30)}</td>
+  <td data-label=">60d" class="number">${fmt(r.p60)}</td>
+  <td data-label=">90d" class="number">${fmt(r.p90)}</td>
+  <td data-label=">120d" class="number">${fmt(r.p120)}</td>
 `;
+    tr.addEventListener('click',()=> openDrill(r, sDate, eDate));
+    tbody.appendChild(tr);
+  }
 
-        tr.addEventListener('click',()=> openDrill(r, sDate, eDate));
-        tbody.appendChild(tr);
-      }
-      $('#countInfo').textContent = `${rows.length} employees`; 
-      // KPI header (overall)
-      $('#k_open').textContent = fmt(totOpen);
-      $('#k_recv').textContent = fmt(totRecv);
-      $('#k_proc').textContent = fmt(totProc);
-      $('#k_close').textContent = fmt(totClose);
-      const allAvg = allDur.length ? allDur.reduce((a,b)=>a+b,0)/allDur.length : NaN;
-      const allMed = allDur.length ? median(allDur) : NaN;
-      $('#k_avg').textContent = toHH(allAvg);
-      $('#k_med').textContent = toHH(allMed);
-      // hints
-      $('#k_open_hint').textContent = dateHint('as of', sDate);
-      $('#k_close_hint').textContent = dateHint('as of', eDate);
-      $('#k_recv_hint').textContent = dateHint('between', sDate, eDate);
-      $('#k_proc_hint').textContent = dateHint('between', sDate, eDate);
+  $('#countInfo').textContent = `${rows.length} employees`; 
 
-      computePendingAges();
+  // KPI header (overall)
+  $('#k_open').textContent = fmt(totOpen);
+  $('#k_recv').textContent = fmt(totRecv);
+  $('#k_proc').textContent = fmt(totProc);
+  $('#k_close').textContent = fmt(totClose);
 
-    }
+  const allAvg = allDur.length ? allDur.reduce((a,b)=>a+b,0)/allDur.length : NaN;
+  const allMed = allDur.length ? median(allDur) : NaN;
+
+  $('#k_avg').textContent = isFinite(allAvg) ? fmtDuration(allAvg) : '';
+  $('#k_med').textContent = isFinite(allMed) ? fmtDuration(allMed) : '';
+
+  // hints
+  $('#k_open_hint').textContent = dateHint('as of', sDate);
+  $('#k_close_hint').textContent = dateHint('as of', eDate);
+  $('#k_recv_hint').textContent = dateHint('between', sDate, eDate);
+  $('#k_proc_hint').textContent = dateHint('between', sDate, eDate);
+
+  computePendingAges();
+}
+
 
     function dateHint(prefix, a, b){
       const f = d=> d? d.toLocaleDateString('en-GB') : '-';
@@ -1009,4 +1082,3 @@ function maybeInit(){
   </script>
 </body>
 </html>
-
