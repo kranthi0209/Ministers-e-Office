@@ -1,0 +1,422 @@
+[
+    {
+      "post_id": 6,
+      "login_id": "hcm.ap",
+      "post_name": "CHIEF MINISTER",
+      "org_unit_name": "CHIEF MINISTER-AP",
+      "employee_name": "NARA CHANDRABABU NAIDU"
+    },
+    {
+      "post_id": 2145,
+      "login_id": "k.atchannaidu",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-LABOUR,FACTORIES,BOILERS AND INSURANCE MEDICAL SERVICES",
+      "employee_name": "ATCHANNAIDU KINJARAPU"
+    },
+    {
+      "post_id": 2296,
+      "login_id": "narayana.ponguru",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-MUNICIPAL ADMINISTRATION & URBAN DEVELOPMENT",
+      "employee_name": "NARAYANA PONGURU"
+    },
+    {
+      "post_id": 2317,
+      "login_id": "kollu.ravindra",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-BC WELFARE",
+      "employee_name": "KOLLU RAVINDRA"
+    },
+    {
+      "post_id": 15005,
+      "login_id": "l.nara",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-INFORMATION TECHNOLOGY,RTG",
+      "employee_name": "NARA LOKESH"
+    },
+    {
+      "post_id": 15006,
+      "login_id": "l.nara",
+      "post_name": "MINISTER",
+      "org_unit_name": " MINISTER-PANCHAYAT RAJ, RURAL DEVELOPMENT AND RURAL WATER SUPPLY",
+      "employee_name": "NARA LOKESH"
+    },
+    {
+      "post_id": 15010,
+      "login_id": "k.atchannaidu",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-BC WELFARE",
+      "employee_name": "ATCHANNAIDU KINJARAPU"
+    },
+    {
+      "post_id": 15067,
+      "login_id": "k.atchannaidu",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-TRANSPORT",
+      "employee_name": "ATCHANNAIDU KINJARAPU"
+    },
+    {
+      "post_id": 15419,
+      "login_id": "kollu.ravindra",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-LAW&JUSTICE",
+      "employee_name": "KOLLU RAVINDRA"
+    },
+    {
+      "post_id": 43569,
+      "login_id": "nmd.farook",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-MINORITY WELFARE",
+      "employee_name": "N MD FAROOK"
+    },
+    {
+      "post_id": 44479,
+      "login_id": "kollu.ravindra",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-NRI EMPOWERMENT AND RELATIONS",
+      "employee_name": "KOLLU RAVINDRA"
+    },
+    {
+      "post_id": 44480,
+      "login_id": "kollu.ravindra",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-SKILL DEVELOPMENT AND TRAINING-SEI01",
+      "employee_name": "KOLLU RAVINDRA"
+    },
+    {
+      "post_id": 44481,
+      "login_id": "nmd.farook",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-HEALTH,FAMILY WELFARE AND MEDICAL EDUCATION",
+      "employee_name": "N MD FAROOK"
+    },
+    {
+      "post_id": 44483,
+      "login_id": "k.atchannaidu",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-HANDLOOMS AND TEXTILES",
+      "employee_name": "ATCHANNAIDU KINJARAPU"
+    },
+    {
+      "post_id": 44491,
+      "login_id": "kollu.ravindra",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-YOUTH AND SPORTS",
+      "employee_name": "KOLLU RAVINDRA"
+    },
+    {
+      "post_id": 88436,
+      "login_id": "hcm.ap",
+      "post_name": "CHIEF MINISTER",
+      "org_unit_name": "CHIEF MINISTER-AP",
+      "employee_name": "NARA CHANDRABABU NAIDU"
+    },
+    {
+      "post_id": 88505,
+      "login_id": "l.nara",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-INFORMATION TECHNOLOGY,RTG",
+      "employee_name": "NARA LOKESH"
+    },
+    {
+      "post_id": 88646,
+      "login_id": "k.pawankalyan",
+      "post_name": "DEPUTY CHIEF MINISTER",
+      "org_unit_name": " MINISTER-PANCHAYAT RAJ, RURAL DEVELOPMENT AND RURAL WATER SUPPLY",
+      "employee_name": "KONIDALA PAWAN KALYAN"
+    },
+    {
+      "post_id": 88647,
+      "login_id": "k.pawankalyan",
+      "post_name": "DEPUTY CHIEF MINISTER",
+      "org_unit_name": "MINISTER-ENVIRONMENT FOREST SCIENCE AND TECHNOLOGY",
+      "employee_name": "KONIDALA PAWAN KALYAN"
+    },
+    {
+      "post_id": 88654,
+      "login_id": "l.nara",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-HUMAN RESOURCES DEVELOPMENT",
+      "employee_name": "NARA LOKESH"
+    },
+    {
+      "post_id": 88656,
+      "login_id": "payyavula.keshav",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-FINANCE,COMMERCIAL TAXES AND LEGISLATIVE",
+      "employee_name": "PAYYAVULA KESHAV"
+    },
+    {
+      "post_id": 88668,
+      "login_id": "m.nadendla",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-FOOD AND CIVIL SUPPLIES, CONSUMER AFFAIRS",
+      "employee_name": "NADENDLA MANOHAR"
+    },
+    {
+      "post_id": 88670,
+      "login_id": "k.atchannaidu",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-AGRICULTURE,COOPERATION,MARKETING",
+      "employee_name": "ATCHANNAIDU KINJARAPU"
+    },
+    {
+      "post_id": 88671,
+      "login_id": "k.atchannaidu",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-ANIMAL HUSBANDRY,DAIRY DEVELOPMENT AND FISHERIES",
+      "employee_name": "ATCHANNAIDU KINJARAPU"
+    },
+    {
+      "post_id": 88672,
+      "login_id": "kollu.ravindra",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-EXCISE",
+      "employee_name": "KOLLU RAVINDRA"
+    },
+    {
+      "post_id": 88673,
+      "login_id": "kollu.ravindra",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-MINES AND GEOLOGY",
+      "employee_name": "KOLLU RAVINDRA"
+    },
+    {
+      "post_id": 88675,
+      "login_id": "narayana.ponguru",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-MUNICIPAL ADMINISTRATION & URBAN DEVELOPMENT",
+      "employee_name": "NARAYANA PONGURU"
+    },
+    {
+      "post_id": 88677,
+      "login_id": "anitha.vangalapudi",
+      "post_name": "MINISTER",
+      "org_unit_name": " MINISTER-HOME AFFAIRS",
+      "employee_name": "VANGALAPUDI ANITHA"
+    },
+    {
+      "post_id": 88679,
+      "login_id": "anitha.vangalapudi",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-DISASTER MANAGEMENT",
+      "employee_name": "VANGALAPUDI ANITHA"
+    },
+    {
+      "post_id": 88681,
+      "login_id": "satyakumar.yadav",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-HEALTH,FAMILY WELFARE AND MEDICAL EDUCATION",
+      "employee_name": "SATYA KUMAR YADAV"
+    },
+    {
+      "post_id": 88683,
+      "login_id": "anagani.satyaprasad",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-REVENUE, REGISTRATION & STAMPS",
+      "employee_name": "ANAGANI SATYA PRASAD"
+    },
+    {
+      "post_id": 88684,
+      "login_id": "gottipati.ravikumar",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-ENERGY",
+      "employee_name": "GOTTIPATI RAVI KUMAR"
+    },
+    {
+      "post_id": 88686,
+      "login_id": "nmd.farook",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-MINORITY WELFARE",
+      "employee_name": "N MD FAROOK"
+    },
+    {
+      "post_id": 88687,
+      "login_id": "nmd.farook",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-LAW&JUSTICE",
+      "employee_name": "N MD FAROOK"
+    },
+    {
+      "post_id": 88688,
+      "login_id": "sandhyarani.gummidi",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-WOMEN AND CHILD WELFARE",
+      "employee_name": "GUMMIDI SANDHYA RANI"
+    },
+    {
+      "post_id": 88690,
+      "login_id": "sandhyarani.gummidi",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-TRIBAL WELFARE",
+      "employee_name": "GUMMIDI SANDHYA RANI"
+    },
+    {
+      "post_id": 88691,
+      "login_id": "tg.bharath",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-INDUSTRIES AND COMMERCE",
+      "employee_name": "T G BHARATH"
+    },
+    {
+      "post_id": 88711,
+      "login_id": "ramanaidu.nimmala",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-WATER RESOURCES DEVELOPMENT",
+      "employee_name": "NIMMALA RAMANAIDU"
+    },
+    {
+      "post_id": 88712,
+      "login_id": "kandula.durgesh",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-TOURISM,CULTURE",
+      "employee_name": "KANDULA DURGESH"
+    },
+    {
+      "post_id": 88729,
+      "login_id": "s.savitha",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-BC WELFARE",
+      "employee_name": "S SAVITHA"
+    },
+    {
+      "post_id": 88730,
+      "login_id": "s.savitha",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-HANDLOOMS AND TEXTILES",
+      "employee_name": "S SAVITHA"
+    },
+    {
+      "post_id": 88731,
+      "login_id": "arn.reddy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-ENDOWMENTS",
+      "employee_name": "A RAMNARAYANA REDDY"
+    },
+    {
+      "post_id": 88736,
+      "login_id": "m.ramprasadreddy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-TRANSPORT",
+      "employee_name": "MANDIPALLI RAMPRASAD REDDY"
+    },
+    {
+      "post_id": 88737,
+      "login_id": "m.ramprasadreddy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-YOUTH AND SPORTS",
+      "employee_name": "MANDIPALLI RAMPRASAD REDDY"
+    },
+    {
+      "post_id": 88741,
+      "login_id": "vasamsetty.subhash",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-LABOUR,FACTORIES,BOILERS AND INSURANCE MEDICAL SERVICES",
+      "employee_name": "VASAMSETTI SUBHASH"
+    },
+    {
+      "post_id": 88744,
+      "login_id": "bc.janardhanreddy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-ROADS & BUILDINGS",
+      "employee_name": "B C JANARDHANA REDDY"
+    },
+    {
+      "post_id": 88745,
+      "login_id": "bc.janardhanreddy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-INFRASTRUCTURE&INVESTMENT",
+      "employee_name": "B C JANARDHANA REDDY"
+    },
+    {
+      "post_id": 88760,
+      "login_id": "kolusu.parthasarathy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-HOUSING",
+      "employee_name": "PARTHA SARATHY KOLUSU"
+    },
+    {
+      "post_id": 88761,
+      "login_id": "kolusu.parthasarathy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-I&PR",
+      "employee_name": "PARTHA SARATHY KOLUSU"
+    },
+    {
+      "post_id": 88762,
+      "login_id": "drswamy.dola",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-SOCIAL WELFARE",
+      "employee_name": "DR DOLA SREE BALA VEERANJANEYA SWAMY"
+    },
+    {
+      "post_id": 88763,
+      "login_id": "drswamy.dola",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-SACHIVALAYAM AND VILLAGE VOLUNTEER",
+      "employee_name": "DR DOLA SREE BALA VEERANJANEYA SWAMY"
+    },
+    {
+      "post_id": 88775,
+      "login_id": "kolusu.parthasarathy",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-I&PR",
+      "employee_name": "PARTHA SARATHY KOLUSU"
+    },
+    {
+      "post_id": 88776,
+      "login_id": "payyavula.keshav",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-PLANNING",
+      "employee_name": "PAYYAVULA KESHAV"
+    },
+    {
+      "post_id": 88777,
+      "login_id": "kondapalli.s",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-MICRO SMALL AND MEDIUM ENTERPRISES",
+      "employee_name": "KONDAPALLI SRINIVAS"
+    },
+    {
+      "post_id": 88778,
+      "login_id": "kondapalli.s",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-SERP",
+      "employee_name": "KONDAPALLI SRINIVAS"
+    },
+    {
+      "post_id": 88779,
+      "login_id": "kondapalli.s",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-NRI EMPOWERMENT AND RELATIONS",
+      "employee_name": "KONDAPALLI SRINIVAS"
+    },
+    {
+      "post_id": 89085,
+      "login_id": "s.savitha",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-ECONIMCALLY WEAKER SECTIONS WELFARE",
+      "employee_name": "S SAVITHA"
+    },
+    {
+      "post_id": 89118,
+      "login_id": "drswamy.dola",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-DISABLED AND SENIOR CITIZEN WELFARE",
+      "employee_name": "DR DOLA SREE BALA VEERANJANEYA SWAMY"
+    },
+    {
+      "post_id": 89191,
+      "login_id": "kandula.durgesh",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-CINEMATOGRAPHY",
+      "employee_name": "KANDULA DURGESH"
+    },
+    {
+      "post_id": 89192,
+      "login_id": "tg.bharath",
+      "post_name": "MINISTER",
+      "org_unit_name": "MINISTER-FOOD PROCESSING",
+      "employee_name": "T G BHARATH"
+    }
+  ]
