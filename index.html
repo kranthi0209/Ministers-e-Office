@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File Clearance KPI Dashboard</title>
+  <title>Minister's e-File Clearance KPI Dashboard</title>
   <style>
     :root{
       --bg:#0f172a; /* slate-900 */
       --card:#111827ee; /* gray-900 */
       --muted:#94a3b8; /* slate-400 */
-      --text:#e5e7eb; /* gray-200 */
+      --text:#ebebe5; /* gray-200 */
       --accent:#22d3ee; /* cyan-400 */
       --accent-2:#a78bfa; /* violet-400 */
       --good:#10b981; /* emerald */
@@ -23,7 +23,7 @@
     body{margin:0;background:linear-gradient(180deg,#0b1022, #0f172a);color:var(--text);font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial}
     .wrap{max-width:1300px;margin:24px auto;padding:0 16px 60px}
     header{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:16px}
-    .title{font-size:22px;font-weight:700;letter-spacing:.2px}
+    .title{font-size:32px;font-weight:700;letter-spacing:.2px}
     .sub{color:var(--muted);font-size:12px}
     .bar{display:flex;gap:10px;flex-wrap:wrap}
     .card{background:linear-gradient(180deg, #0f172acc, #0b1022cc);border:1px solid #1f2937;border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
@@ -73,7 +73,7 @@
 .loading-modal {
   position: fixed;
   inset: 0;
-  background: rgba(15,23,42,0.95);
+  background: rgba(235, 232, 92, 0.95);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -426,6 +426,266 @@
   }
 }
 
+.processed-section {
+  background: linear-gradient(180deg, #0b1224, #111827);
+  border: 1px solid #334155;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* Header in one line */
+.processed-header-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.processed-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0;
+  white-space: nowrap; /* keep header in one line */
+}
+
+/* KPIs stretch evenly across the section */
+.processed-kpis {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap; /* allow wrapping on smaller screens */
+}
+
+.processed-kpis .kpi {
+  flex: 1; /* each KPI takes equal width */
+  min-width: 120px; /* prevents being too narrow */
+  text-align: center;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .basic-kpis .kpi {
+    flex: 0 0 calc(33.33% - 8px); /* 3 per row with gap */
+  }
+}
+
+@media (max-width: 600px) {
+  .basic-kpis .kpi {
+    flex: 0 0 calc(50% - 6px); /* 2 per row with gap */
+  }
+}
+
+@media (max-width: 400px) {
+  .basic-kpis .kpi {
+    flex: 0 0 100%; /* stacked vertically */
+  }
+}
+.details-section {
+  background: linear-gradient(180deg, #0b1224, #111827);
+  border: 1px solid #334155;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* Header in one line */
+.details-header-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.details-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0;
+  white-space: nowrap; /* keep header in one line */
+}
+/* Scrollable container */
+.table-wrapper {
+  max-width: 100%;
+  max-height: 500px;      /* vertical limit */
+  overflow-x: auto;       /* horizontal scroll */
+  overflow-y: auto;       /* vertical scroll */
+  border: 1px solid #1e293b;
+  position: relative;
+}
+
+/* Table */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Sticky top-left cell */
+thead th:first-child {
+  position: sticky;x
+  top: 0;
+  left: 0;
+  z-index: 10; /* higher than header row and first column */
+  background: #000205; /* solid background to cover stripes */
+}
+
+/* Sticky header row */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #000205;
+  color: #e5e7eb;
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* Sticky first column */
+tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 6;
+  background: #000205; /* match header background for clean look */
+  font-weight: 600;
+}
+
+
+/* Alternate striping for rows */
+tbody tr:nth-child(odd) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Ensure sticky first column follows striping */
+tbody tr:nth-child(odd) td:first-child {
+  background: #0f172a;
+  z-index: 6;
+}
+tbody tr:nth-child(even) td:first-child {
+  background: #121c31;
+  z-index: 6;
+}
+/* First column left aligned */
+tbody td:first-child,
+thead th:first-child {
+  text-align: left;
+  padding-left: 12px;
+}
+
+/* All other columns center aligned */
+tbody td:not(:first-child),
+thead th:not(:first-child) {
+  text-align: center;
+}
+
+/* Column-specific widths */
+th:nth-child(1), td:nth-child(1) { 
+  min-width: 150px;   /* Employee */
+}
+
+th:nth-child(2), td:nth-child(2) { 
+  min-width: 80px;    /* Opening */
+  text-align: right;
+}
+
+th:nth-child(3), td:nth-child(3) { 
+  min-width: 80px;    /* Received */
+  text-align: right;
+}
+
+th:nth-child(4), td:nth-child(4) { 
+  min-width: 80px;    /* Processed */
+  text-align: right;
+}
+
+th:nth-child(5), td:nth-child(5) { 
+  min-width: 80px;   /* Processed ≤1d */
+  text-align: right;
+}
+
+th:nth-child(6), td:nth-child(6) { 
+  min-width: 80px;   /* Processed ≤2d */
+  text-align: right;
+}
+
+th:nth-child(7), td:nth-child(7) { 
+  min-width: 80px;   /* Processed ≤3d */
+  text-align: right;
+}
+
+th:nth-child(8), td:nth-child(8) { 
+  min-width: 80px;   /* Processed ≤1w */
+  text-align: right;
+}
+
+th:nth-child(9), td:nth-child(9) { 
+  min-width: 80px;   /* Processed ≤1m */
+  text-align: right;
+}
+
+th:nth-child(10), td:nth-child(10) { 
+  min-width: 110px;   /* Processed >1m */
+  text-align: right;
+}
+
+th:nth-child(11), td:nth-child(11) { 
+  min-width: 80px;    /* Closing */
+  text-align: right;
+}
+
+th:nth-child(12), td:nth-child(12) { 
+  min-width: 120px;   /* Avg Time */
+  text-align: right;
+}
+
+th:nth-child(13), td:nth-child(13) { 
+  min-width: 120px;   /* Median Time */
+  text-align: right;
+}
+
+th:nth-child(14), td:nth-child(14) { 
+  min-width: 80px;   /* Active Files */
+  text-align: right;
+}
+
+th:nth-child(15), td:nth-child(15) { 
+  min-width: 80px;   /* Pending >7d */
+  text-align: right;
+}
+
+th:nth-child(16), td:nth-child(16) { 
+  min-width: 80px;   /* Pending >15d */
+  text-align: right;
+}
+
+th:nth-child(17), td:nth-child(17) { 
+  min-width: 80px;   /* Pending >30d */
+  text-align: right;
+}
+
+th:nth-child(18), td:nth-child(18) { 
+  min-width: 80px;   /* Pending >60d */
+  text-align: right;
+}
+
+th:nth-child(19), td:nth-child(19) { 
+  min-width: 80px;   /* Pending >90d */
+  text-align: right;
+}
+
+th:nth-child(20), td:nth-child(20) { 
+  min-width: 80px;   /* Pending >120d */
+  text-align: right;
+}
 
   </style>
 </head>
@@ -433,14 +693,13 @@
 <div class="loading-modal" id="loadingModal">
   <div class="loading-box">
     <div class="loader-icon">📂</div>
-    <h2>Dear User,</h2>
+    <h2>Dear User</h2>
     <p>
-      The dashboard is fetching a huge data set.<br/>
-      Please be patient for a little while.<br/>
-      Your patience will not be unfruitful.<br/>
-      You are going to witness an <b>amazing</b> user-friendly<br/>
-      <span class="highlight">e-Office File Clearance Dashboard</span>.
-    </p>
+  The dashboard is currently loading a large dataset.
+  This may take a few moments — thank you for your patience
+  Once ready, you’ll have access to an <b>intuitive</b> and user-friendly<br/>
+  <span class="highlight">Minister’s e-Office File Clearance Dashboard</span>.
+</p>
     <div class="loader"></div>
   </div>
 </div>
@@ -510,7 +769,22 @@
   </div>
 </section>
 
+<section class="processed-section">
+  <div class="processed-header-wrapper">
+    <h3>KPIs based on the files processed by Ministers</h3>
+  </div>
 
+  <div class="processed-kpis">
+
+<div class="kpi"><div class="value" id="k_proc1d"></div><div class="label">Processed ≤ 1d</div></div>
+<div class="kpi"><div class="value" id="k_proc2d"></div><div class="label">Processed ≤ 2d</div></div>
+<div class="kpi"><div class="value" id="k_proc3d"></div><div class="label">Processed ≤ 3d</div></div>
+<div class="kpi"><div class="value" id="k_proc1w"></div><div class="label">Processed ≤ 1w</div></div>
+<div class="kpi"><div class="value" id="k_proc1m"></div><div class="label">Processed ≤ 1m</div></div>
+<div class="kpi"><div class="value" id="k_procGt1m"></div><div class="label">Processed > 1m</div></div>
+
+</div>
+</section>
 
 <section class="pending-section">
   <div class="pending-header-wrapper">
@@ -531,38 +805,48 @@
 
 
 
-
-
-    <section class="grid">
-      <table>
-        <thead>
-  <tr>
-    <th>Employee</th>
-    
-    <th class="number">Opening</th>
-    <th class="number">Received</th>
-    <th class="number">Processed</th>
-    <th class="number">Closing</th>
-    <th class="number">Avg Time</th>
-    <th class="number">Median Time</th>
-    <th class="number">Active Files</th>
-    <th class="number">Pending >7d</th>
-    <th class="number">Pending >15d</th>
-    <th class="number">Pending >30d</th>
-    <th class="number">Pending >60d</th>
-    <th class="number">Pending >90d</th>
-    <th class="number">Pending >120d</th>
-  </tr>
-</thead>
-        <tbody id="tbody"></tbody>
-      </table>
-      <div class="footer">
-        <div id="countInfo">—</div>
-        <div>Click a row to drill into file-wise details</div>
-      </div>
-    </section>
+<section class="details-section">
+  <div class="details-header-wrapper">
+    <h3>Table showing the Minister wise performance in clearing e-Office Files</h3>
   </div>
+    <section class="grid">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Minister's Name</th>
+          <th class="number">Opening</th>
+          <th class="number">Received</th>
+          <th class="number">Processed</th>
+          <th class="number">Processed ≤1d</th>
+          <th class="number">Processed ≤2d</th>
+          <th class="number">Processed ≤3d</th>
+          <th class="number">Processed ≤1w</th>
+          <th class="number">Processed ≤1m</th>
+          <th class="number">Processed &gt;1m</th>
+          <th class="number">Closing</th>
+          <th class="number">Avg Time</th>
+          <th class="number">Median Time</th>
+          <th class="number">Pending Files</th>
+          <th class="number">Pending &gt;7d</th>
+          <th class="number">Pending &gt;15d</th>
+          <th class="number">Pending &gt;30d</th>
+          <th class="number">Pending &gt;60d</th>
+          <th class="number">Pending &gt;90d</th>
+          <th class="number">Pending &gt;120d</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="footer">
+    <div id="countInfo">—</div>
+    <div>Click a value to drill into file-wise details</div>
+  </div>
+</section>
 
+  </div>
+</section>
   <div class="modal" id="modal">
     <div class="box">
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -819,7 +1103,7 @@ function aggregateByEmployee(list, sDate, eDate){
   const map = new Map();
   for(const it of list){
     const key = `${it.holder}`;
-    if(!map.has(key)) map.set(key, {employee:it.holder, intervals:[]});
+    if(!map.has(key)) map.set(key, {employee: it.holder, intervals: []});
     map.get(key).intervals.push(it);
   }
 
@@ -828,33 +1112,38 @@ function aggregateByEmployee(list, sDate, eDate){
 
   for(const [k,obj] of map){
     const ints = obj.intervals;
-    let opening = 0, received = 0, processed = 0, closing = 0;
-    const procdDurations = [];
-    let activeNow = 0;
+    let opening=0, received=0, processed=0, closing=0;
+    let activeNow=0;
 
     // pending buckets
-    let p7=0, p15=0, p30=0, p60=0, p90=0, p120=0;
+    let p7=0,p15=0,p30=0,p60=0,p90=0,p120=0;
+
+    const procDurations=[];
 
     for(const iv of ints){
-      const st = iv.start, en = iv.end;
+      const st=iv.start, en=iv.end;
+
+      // ---- opening/received/processed ----
       const startedBefore = sDate ? (st && st < sDate) : false;
-      const endsBefore = sDate ? (en && en < sDate) : false;
+      const endsBefore    = sDate ? (en && en < sDate) : false;
       const overlapsStart = sDate ? (st && !endsBefore && (startedBefore || st <= sDate)) : false;
       if(sDate && overlapsStart) opening++;
+
       if(sDate && eDate){
         if(st && st >= sDate && st <= eDate) received++;
         if(en && en >= sDate && en <= eDate){
           processed++;
           const durMs = en - st;
-          if(isFinite(durMs)) procdDurations.push(durMs);
+          if(isFinite(durMs)) procDurations.push(durMs);
         }
       }
-      // ---- Active files (independent of date range) ----
+
+      // ---- Active files ----
       if(!en) activeNow++;
 
-      // ---- Pending bucket logic (only unsent = no end) ----
+      // ---- Pending bucket logic ----
       if(!en && st){
-        const days = (now - st) / (1000*60*60*24);
+        const days = (now - st)/(1000*60*60*24);
         if (days > 7 && days <= 15) p7++;
         else if (days > 15 && days <= 30) p15++;
         else if (days > 30 && days <= 60) p30++;
@@ -864,20 +1153,27 @@ function aggregateByEmployee(list, sDate, eDate){
       }
     }
 
-    // avg & median in ms (keep raw numbers)
-    const avgMs = procdDurations.length ? procdDurations.reduce((a,b)=>a+b,0)/procdDurations.length : NaN;
-    const medMs = procdDurations.length ? median(procdDurations) : NaN;
+    // processing-time buckets
+    const proc1d   = procDurations.filter(d=>d <= 1*24*60*60*1000).length;
+    const proc2d   = procDurations.filter(d=>d > 1*24*60*60*1000 && d <= 2*24*60*60*1000).length;
+    const proc3d   = procDurations.filter(d=>d > 2*24*60*60*1000 && d <= 3*24*60*60*1000).length;
+    const proc1w   = procDurations.filter(d=>d > 3*24*60*60*1000 && d <= 7*24*60*60*1000).length;
+    const proc1m   = procDurations.filter(d=>d > 7*24*60*60*1000 && d <= 30*24*60*60*1000).length;
+    const procGt1m = procDurations.filter(d=>d > 30*24*60*60*1000).length;
+
+    // avg & median
+    const avgMs = procDurations.length ? procDurations.reduce((a,b)=>a+b,0)/procDurations.length : NaN;
+    const medMs = procDurations.length ? median(procDurations) : NaN;
 
     closing = opening + received - processed;
 
     rows.push({
       employee: obj.employee,
-      
       opening, received, processed, closing,
-      avg: avgMs,
-      med: medMs,
+      avg: avgMs, med: medMs,
       activeNow,
-      p7, p15, p30, p60, p90, p120,
+      p7,p15,p30,p60,p90,p120,
+      proc1d,proc2d,proc3d,proc1w,proc1m,procGt1m,
       intervals: ints
     });
   }
@@ -885,6 +1181,7 @@ function aggregateByEmployee(list, sDate, eDate){
   rows.sort((a,b)=> b.avg - a.avg || a.employee.localeCompare(b.employee));
   return rows;
 }
+
 
 const median = (arr)=>{
   const a = [...arr].sort((x,y)=>x-y); 
@@ -898,6 +1195,7 @@ function render(rows, sDate, eDate){
   const tbody = $('#tbody');
   tbody.innerHTML = '';
   let totOpen=0, totRecv=0, totProc=0, totClose=0; 
+  let totProc1d=0, totProc2d=0, totProc3d=0, totProc1w=0, totProc1m=0, totProcGt1m=0;
   const allDur=[];
 
   for(const r of rows){
@@ -906,6 +1204,13 @@ function render(rows, sDate, eDate){
     totProc+=r.processed; 
     totClose+=r.closing; 
 
+    totProc1d   += r.proc1d;
+    totProc2d   += r.proc2d;
+    totProc3d   += r.proc3d;
+    totProc1w   += r.proc1w;
+    totProc1m   += r.proc1m;
+    totProcGt1m += r.procGt1m;
+
     if(isFinite(r.avg)) {
       allDur.push(...r.intervals
         .filter(iv=>iv.end && (!sDate || iv.end>=sDate) && (!eDate || iv.end<=eDate))
@@ -913,29 +1218,54 @@ function render(rows, sDate, eDate){
     }
 
     const tr = document.createElement('tr');
-    tr.innerHTML = `
-  <td data-label="Employee"><span class="link">${r.employee}</span></td>
-  <td data-label="Opening" class="number">${fmt(r.opening)}</td>
-  <td data-label="Received" class="number">${fmt(r.received)}</td>
-  <td data-label="Processed" class="number">${fmt(r.processed)}</td>
-  <td data-label="Closing" class="number">${fmt(r.closing)}</td>
+tr.innerHTML = `
+  <td data-label="Employee"><span>${r.employee}</span></td>
+  <td data-label="Opening" class="number"><span class="link">${fmt(r.opening)}</span></td>
+  <td data-label="Received" class="number"><span class="link">${fmt(r.received)}</span></td>
+  <td data-label="Processed" class="number"><span class="link">${fmt(r.processed)}</span></td>
+  <td data-label="≤1d" class="number"><span class="link">${fmt(r.proc1d)}</span></td>
+  <td data-label="≤2d" class="number"><span class="link">${fmt(r.proc2d)}</span></td>
+  <td data-label="≤3d" class="number"><span class="link">${fmt(r.proc3d)}</span></td>
+  <td data-label="≤1w" class="number"><span class="link">${fmt(r.proc1w)}</span></td>
+  <td data-label="≤1m" class="number"><span class="link">${fmt(r.proc1m)}</span></td>
+  <td data-label=">1m" class="number"><span class="link">${fmt(r.procGt1m)}</span></td>
+  <td data-label="Closing" class="number"><span class="link">${fmt(r.closing)}</span></td>
   <td data-label="Avg Time" class="number">${isFinite(r.avg) ? fmtDuration(r.avg) : ''}</td>
   <td data-label="Median Time" class="number">${isFinite(r.med) ? fmtDuration(r.med) : ''}</td>
-  <td data-label="Active" class="number">${fmt(r.activeNow)}</td>
-  <td data-label=">7d" class="number">${fmt(r.p7)}</td>
-  <td data-label=">15d" class="number">${fmt(r.p15)}</td>
-  <td data-label=">30d" class="number">${fmt(r.p30)}</td>
-  <td data-label=">60d" class="number">${fmt(r.p60)}</td>
-  <td data-label=">90d" class="number">${fmt(r.p90)}</td>
-  <td data-label=">120d" class="number">${fmt(r.p120)}</td>
+  <td data-label="Active" class="number"><span class="link">${fmt(r.activeNow)}</span></td>
+  <td data-label=">7d" class="number"><span class="link">${fmt(r.p7)}</span></td>
+  <td data-label=">15d" class="number"><span class="link">${fmt(r.p15)}</span></td>
+  <td data-label=">30d" class="number"><span class="link">${fmt(r.p30)}</span></td>
+  <td data-label=">60d" class="number"><span class="link">${fmt(r.p60)}</span></td>
+  <td data-label=">90d" class="number"><span class="link">${fmt(r.p90)}</span></td>
+  <td data-label=">120d" class="number"><span class="link">${fmt(r.p120)}</span></td>
 `;
-    tr.addEventListener('click',()=> openDrill(r, sDate, eDate));
-    tbody.appendChild(tr);
+
+tbody.appendChild(tr);
+
+// attach click only to the .link spans (numeric values), skip Avg/Median
+tr.querySelectorAll('.link').forEach(span => {
+  span.addEventListener('click', ev => {
+    ev.stopPropagation(); // prevent row click
+    const col = span.parentElement.dataset.label;
+
+    // gather current filter values
+    const sDate = $('#startDate').value ? new Date($('#startDate').value+'T00:00:00') : null;
+    const eDate = $('#endDate').value ? new Date($('#endDate').value+'T23:59:59') : null;
+    const empSelected = getSelectedEmployees(); // multi-select
+    const subj = $('#subjectInput').value.trim().toLowerCase();
+    const comp = $('#compInput').value.trim();
+
+    openDrill(r.employee, col, { sDate, eDate, empSelected, subj, comp });
+  });
+});
+
+
   }
 
-  $('#countInfo').textContent = `${rows.length} employees`; 
+  $('#countInfo').textContent = `${rows.length} employees`;
 
-  // KPI header (overall)
+  // Header KPIs
   $('#k_open').textContent = fmt(totOpen);
   $('#k_recv').textContent = fmt(totRecv);
   $('#k_proc').textContent = fmt(totProc);
@@ -943,18 +1273,25 @@ function render(rows, sDate, eDate){
 
   const allAvg = allDur.length ? allDur.reduce((a,b)=>a+b,0)/allDur.length : NaN;
   const allMed = allDur.length ? median(allDur) : NaN;
-
   $('#k_avg').textContent = isFinite(allAvg) ? fmtDuration(allAvg) : '';
   $('#k_med').textContent = isFinite(allMed) ? fmtDuration(allMed) : '';
 
-  // hints
   $('#k_open_hint').textContent = dateHint('as of', sDate);
   $('#k_close_hint').textContent = dateHint('as of', eDate);
   $('#k_recv_hint').textContent = dateHint('between', sDate, eDate);
   $('#k_proc_hint').textContent = dateHint('between', sDate, eDate);
 
+  // Processed-time bucket KPIs
+  $('#k_proc1d').textContent = fmt(totProc1d);
+  $('#k_proc2d').textContent = fmt(totProc2d);
+  $('#k_proc3d').textContent = fmt(totProc3d);
+  $('#k_proc1w').textContent = fmt(totProc1w);
+  $('#k_proc1m').textContent = fmt(totProc1m);
+  $('#k_procGt1m').textContent = fmt(totProcGt1m);
+
   computePendingAges();
 }
+
 
 
     function dateHint(prefix, a, b){
@@ -963,30 +1300,84 @@ function render(rows, sDate, eDate){
     }
 
     // ===== Drilldown =====
-    function openDrill(row, sDate, eDate){
-      $('#modalTitle').textContent = `${row.employee} — ${row.post || ''}`;
-      const box = $('#detailRows'); box.innerHTML='';
+    function openDrill(employee, metric, filters){
+  $('#modalTitle').textContent = `${employee} — ${metric}`;
+  const box = $('#detailRows'); 
+  box.innerHTML = '';
 
-      // Filter intervals relevant to range & sort by end (processing time)
-      const ints = row.intervals
-        .filter(iv=> !sDate || (iv.start && (iv.end? iv.end>=sDate : iv.start<=sDate)))
-        .sort((a,b)=> (a.end||a.start) - (b.end||b.start));
+  const maxDate = filters.eDate || new Date(); 
 
-      for(const iv of ints){
-        const dur = iv.end ? hours(iv.end - iv.start) : NaN;
-        const el = document.createElement('div');
-        el.className = 'row';
-        el.innerHTML = `
-          <div class='label'>Computer No</div><div>#${iv.fileNo}</div>
-          <div class='label'>Subject</div><div>${escapeHTML(iv.subject||'')}</div>
-          <div class='label'>Held From</div><div>${iv.start? iv.start.toLocaleString(): '-'}</div>
-          <div class='label'>Sent On</div><div>${iv.end? iv.end.toLocaleString(): '<span class="tag">Pending with user</span>'}</div>
-          <div class='label'>Time Taken</div><div>${toHH(dur)}</div>
-        `;
-        box.appendChild(el);
-      }
-      $('#modal').classList.add('open');
+  const filteredIntervals = INTERVALS.filter(iv=>{
+    if(iv.holder !== employee) return false;
+
+    // Apply general filters
+    if(filters.subj && !String(iv.subject||'').toLowerCase().includes(filters.subj)) return false;
+    if(filters.comp && String(iv.fileNo) !== filters.comp) return false;
+
+    // Metric-specific logic
+    switch(metric){
+      case 'Opening': 
+        return filters.sDate && iv.start && iv.start < filters.sDate;
+      case 'Received': 
+        return filters.sDate && filters.eDate && iv.start && iv.start >= filters.sDate && iv.start <= filters.eDate;
+      case 'Processed': 
+        return filters.sDate && filters.eDate && iv.end && iv.end >= filters.sDate && iv.end <= filters.eDate;
+      case 'Active': 
+        return !iv.end;
+      case '≤1d': 
+        return iv.end && (iv.end - iv.start) <= 1*24*60*60*1000;
+      case '≤2d': 
+        return iv.end && (iv.end - iv.start) > 1*24*60*60*1000 && (iv.end - iv.start) <= 2*24*60*60*1000;
+      case '≤3d': 
+        return iv.end && (iv.end - iv.start) > 2*24*60*60*1000 && (iv.end - iv.start) <= 3*24*60*60*1000;
+      case '≤1w': 
+        return iv.end && (iv.end - iv.start) > 3*24*60*60*1000 && (iv.end - iv.start) <= 7*24*60*60*1000;
+      case '≤1m': 
+        return iv.end && (iv.end - iv.start) > 7*24*60*60*1000 && (iv.end - iv.start) <= 30*24*60*60*1000;
+      case '>1m': 
+        return iv.end && (iv.end - iv.start) > 30*24*60*60*1000;
+      case '>7d': case '>15d': case '>30d': case '>60d': case '>90d': case '>120d':
+        if(!iv.end && iv.start){
+          const daysHeld = (maxDate - iv.start)/(1000*60*60*24);
+          if(metric === '>7d') return daysHeld > 7 && daysHeld <= 15;
+          if(metric === '>15d') return daysHeld > 15 && daysHeld <= 30;
+          if(metric === '>30d') return daysHeld > 30 && daysHeld <= 60;
+          if(metric === '>60d') return daysHeld > 60 && daysHeld <= 90;
+          if(metric === '>90d') return daysHeld > 90 && daysHeld <= 120;
+          if(metric === '>120d') return daysHeld > 120;
+        }
+        return false;
+      default: 
+        return false;  // fallback
     }
+  });
+
+  // Sort descending by duration
+  filteredIntervals.sort((a,b)=>{
+    const durA = a.end ? a.end - a.start : maxDate - a.start;
+    const durB = b.end ? b.end - b.start : maxDate - b.start;
+    return durB - durA;
+  });
+
+  for(const iv of filteredIntervals){
+    const dur = iv.end ? iv.end - iv.start : maxDate - iv.start;
+    const el = document.createElement('div');
+    el.className = 'row';
+    el.innerHTML = `
+      <div class='label'>Computer No</div><div>#${iv.fileNo}</div>
+      <div class='label'>Subject</div><div>${escapeHTML(iv.subject||'')}</div>
+      <div class='label'>Held From</div><div>${iv.start ? iv.start.toLocaleString() : '-'}</div>
+      <div class='label'>Sent On</div><div>${iv.end ? iv.end.toLocaleString() : '<span class="tag">Pending</span>'}</div>
+      <div class='label'>${iv.end ? 'Time Taken' : 'Held For'}</div><div>${fmtDuration(dur)}</div>
+    `;
+    box.appendChild(el);
+  }
+
+  $('#modal').classList.add('open');
+}
+
+
+
     $('#btnClose').onclick = ()=> $('#modal').classList.remove('open');
 
     // ===== Export CSV =====
