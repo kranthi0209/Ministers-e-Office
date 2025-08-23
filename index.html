@@ -272,6 +272,47 @@
 .card:has(#employeeSelectContainer) {
   display: none !important;
 }
+.kpis {
+  background: linear-gradient(180deg, #0b1224, #111827);
+  border: 1px solid #334155;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* Header on its own line */
+.kpi-section-header {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent-2);
+  margin: 0 0 16px 0; /* spacing below header */
+  white-space: nowrap;
+}
+
+/* Widgets in next line */
+.kpi-container {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Each widget expands evenly */
+.kpi-container .kpi {
+  flex: 1;           /* expand to fill container */
+  min-width: 140px;  /* prevents widgets from being too narrow */
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+  .kpi-container .kpi { flex: 0 0 calc(50% - 6px); } /* 2 per row */
+}
+
+@media (max-width: 600px) {
+  .kpi-container .kpi { flex: 0 0 100%; } /* stacked vertically */
+}
+
 .pending-section {
   background: linear-gradient(180deg, #0b1224, #111827);
   border: 1px solid #334155;
@@ -328,6 +369,62 @@
     flex: 0 0 100%; /* stacked vertically */
   }
 }
+.basic-section {
+  background: linear-gradient(180deg, #0b1224, #111827);
+  border: 1px solid #334155;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* Header in one line */
+.basic-header-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.basic-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0;
+  white-space: nowrap; /* keep header in one line */
+}
+
+/* KPIs stretch evenly across the section */
+.basic-kpis {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap; /* allow wrapping on smaller screens */
+}
+
+.basic-kpis .kpi {
+  flex: 1; /* each KPI takes equal width */
+  min-width: 120px; /* prevents being too narrow */
+  text-align: center;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .basic-kpis .kpi {
+    flex: 0 0 calc(33.33% - 8px); /* 3 per row with gap */
+  }
+}
+
+@media (max-width: 600px) {
+  .basic-kpis .kpi {
+    flex: 0 0 calc(50% - 6px); /* 2 per row with gap */
+  }
+}
+
+@media (max-width: 400px) {
+  .basic-kpis .kpi {
+    flex: 0 0 100%; /* stacked vertically */
+  }
+}
 
 
   </style>
@@ -351,8 +448,8 @@
   <div class="wrap">
     <header>
       <div>
-        <div class="title">File Clearance KPI Dashboard</div>
-        <div class="sub">Compute per-employee performance from Movements + Post IDs</div>
+        <div class="title">Ministers e-File Clearance KPI Dashboard</div>
+        <div class="sub">An illustation of the e-file clearance pattern of all the ministers</div>
       </div>
       
     </header>
@@ -398,19 +495,26 @@
       
     </section>
 
-   <section class="kpis" id="kpis">
-  <div class="kpi"><div class="label">Opening Balance</div><div class="value" id="k_open">-</div><div class="delta" id="k_open_hint"></div></div>
-  <div class="kpi"><div class="label">Files Received</div><div class="value" id="k_recv">-</div><div class="delta" id="k_recv_hint"></div></div>
-  <div class="kpi"><div class="label">Files Processed</div><div class="value" id="k_proc">-</div><div class="delta" id="k_proc_hint"></div></div>
-  <div class="kpi"><div class="label">Closing Balance</div><div class="value" id="k_close">-</div><div class="delta" id="k_close_hint"></div></div>
-  <div class="kpi"><div class="label">Avg Processing Time</div><div class="value" id="k_avg">-</div><div class="delta">(of files processed in range)</div></div>
-  <div class="kpi"><div class="label">Median Processing Time</div><div class="value" id="k_med">-</div><div class="delta">(of files processed in range)</div></div>
+   <section class="basic-section">
+  <div class="basic-header-wrapper">
+    <h3>Basic KPIs of Ministers on  e-File clearance</h3>
+  </div>
+
+  <div class="basic-kpis">
+    <div class="kpi"><div class="label">Opening Balance</div><div class="value" id="k_open">-</div><div class="delta" id="k_open_hint"></div></div>
+    <div class="kpi"><div class="label">Files Received</div><div class="value" id="k_recv">-</div><div class="delta" id="k_recv_hint"></div></div>
+    <div class="kpi"><div class="label">Files Processed</div><div class="value" id="k_proc">-</div><div class="delta" id="k_proc_hint"></div></div>
+    <div class="kpi"><div class="label">Closing Balance</div><div class="value" id="k_close">-</div><div class="delta" id="k_close_hint"></div></div>
+    <div class="kpi"><div class="label">Avg Processing Time</div><div class="value" id="k_avg">-</div><div class="delta">(of files processed in range)</div></div>
+    <div class="kpi"><div class="label">Median Processing Time</div><div class="value" id="k_med">-</div><div class="delta">(of files processed in range)</div></div>
+  </div>
 </section>
-  <!-- 🔽 Pending Age Section -->
-<!-- 🔽 Pending Age Section -->
+
+
+
 <section class="pending-section">
   <div class="pending-header-wrapper">
-    <h3 id="pendingHeader">Pending file status as on -</h3>
+    <h3 id="pendingHeader">Status of the pending files in the login of the ministers as on -</h3>
   </div>
 
   <div class="pending-kpis">
@@ -422,6 +526,7 @@
     <div class="kpi"><div class="label">Pending > 120 Days</div><div class="value" id="k_p120">-</div></div>
   </div>
 </section>
+
 
 
 
