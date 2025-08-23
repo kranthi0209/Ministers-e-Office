@@ -952,7 +952,7 @@ function computePendingAges() {
 const maxSent = MOVES.map(m => parseTS(m.sent_on)).filter(Boolean);
   const maxDate = maxSent.length ? new Date(Math.max(...maxSent)) : now;
   const headerEl = document.getElementById('pendingHeader');
-  headerEl.textContent = `Pending file status as on ${maxDate.toLocaleDateString('en-GB')}`;
+  headerEl.textContent = `Status of files pending with Ministers as on ${maxDate.toLocaleDateString('en-GB')}`;
 
   let p7 = 0, p15 = 0, p30 = 0, p60 = 0, p90 = 0, p120 = 0;
 
@@ -1009,3 +1009,4 @@ function maybeInit(){
   </script>
 </body>
 </html>
+
