@@ -73,7 +73,7 @@
 .loading-modal {
   position: fixed;
   inset: 0;
-  background: rgba(235, 232, 92, 0.95);
+  background: rgba(10, 12, 121, 0.95);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -330,10 +330,10 @@
   margin-bottom: 12px;
 }
 
-.pending-section h3 {
+.pending-section h2 {
   font-size: 16px;
   font-weight: 700;
-  color: var(--accent);
+  color: #ee8da0;
   margin: 0;
   white-space: nowrap; /* keep header in one line */
 }
@@ -386,10 +386,10 @@
   margin-bottom: 12px;
 }
 
-.basic-section h3 {
+.basic-section h2 {
   font-size: 16px;
   font-weight: 700;
-  color: var(--accent);
+  color: #e9f18c;
   margin: 0;
   white-space: nowrap; /* keep header in one line */
 }
@@ -443,10 +443,10 @@
   margin-bottom: 12px;
 }
 
-.processed-section h3 {
+.processed-section h2 {
   font-size: 16px;
   font-weight: 700;
-  color: var(--accent);
+  color: #f190e6;
   margin: 0;
   white-space: nowrap; /* keep header in one line */
 }
@@ -494,15 +494,15 @@
 /* Header in one line */
 .details-header-wrapper {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-start ;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.details-section h3 {
-  font-size: 16px;
+.details-section h1 {
+  font-size: 26px;
   font-weight: 700;
-  color: var(--accent);
+  color: #93ec90;
   margin: 0;
   white-space: nowrap; /* keep header in one line */
 }
@@ -526,7 +526,7 @@ table {
 
 /* Sticky top-left cell */
 thead th:first-child {
-  position: sticky;x
+  position: sticky;
   top: 0;
   left: 0;
   z-index: 10; /* higher than header row and first column */
@@ -756,7 +756,7 @@ th:nth-child(20), td:nth-child(20) {
 
    <section class="basic-section">
   <div class="basic-header-wrapper">
-    <h3>Basic KPIs of Ministers on  e-File clearance</h3>
+    <h2>Basic KPIs of Ministers on  e-File clearance</h2>
   </div>
 
   <div class="basic-kpis">
@@ -771,7 +771,7 @@ th:nth-child(20), td:nth-child(20) {
 
 <section class="processed-section">
   <div class="processed-header-wrapper">
-    <h3>KPIs based on the files processed by Ministers</h3>
+    <h2>KPIs based on the files processed by Ministers</h2>
   </div>
 
   <div class="processed-kpis">
@@ -788,7 +788,7 @@ th:nth-child(20), td:nth-child(20) {
 
 <section class="pending-section">
   <div class="pending-header-wrapper">
-    <h3 id="pendingHeader">Status of the pending files in the login of the ministers as on -</h3>
+    <h2 id="pendingHeader">Pendency of files in the login of the ministers as on -</h2>
   </div>
 
   <div class="pending-kpis">
@@ -807,10 +807,15 @@ th:nth-child(20), td:nth-child(20) {
 
 <section class="details-section">
   <div class="details-header-wrapper">
-    <h3>Table showing the Minister wise performance in clearing e-Office Files</h3>
+    <h1>Minister wise e-Office KPI summary</h1>
   </div>
+  <div style="margin: 10px 0;">
+  <input id="tableSearch" type="text" placeholder="Search Minister..." style="padding:8px; width:350px;background-color: #bdbfc3;">
+</div>
     <section class="grid">
   <div class="table-wrapper">
+    
+
     <table>
       <thead>
         <tr>
@@ -859,25 +864,83 @@ th:nth-child(20), td:nth-child(20) {
 
 
   <script>
-    // ===== Utilities =====
-    const $ = (s, r=document) => r.querySelector(s);
-    const $$ = (s, r=document) => [...r.querySelectorAll(s)];
-    const fmt = (n) => n.toLocaleString('en-IN');
-    const hours = (ms) => ms/36e5;
-    const toHH = (h) => (isNaN(h)?'-': `${h.toFixed(2)} h`);
-    const parseTS = (s) => s ? new Date(String(s).replace(' ', 'T')) : null; // handles +05:30
-    const by = (k) => (a,b)=> (a[k] > b[k]) ? 1 : (a[k] < b[k]) ? -1 : 0;
+/* ===== Sorting state & mapping ===== */
+let currentSort = { column: null, asc: true };
 
-    // ===== State =====
-    let MOVES = []; // movements
-    let IDMAP = new Map(); // post_id -> {employee_name, post_name, org_unit_name}
-    let EMP_POSTS = new Map(); // post_id -> "Employee • Org"
+const HEADER_KEY_MAP = {
+  "Minister's Name": "employee",
+  "Opening": "opening",
+  "Received": "received",
+  "Processed": "processed",
+  "Processed ≤1d": "proc1d",
+  "Processed ≤2d": "proc2d",
+  "Processed ≤3d": "proc3d",
+  "Processed ≤1w": "proc1w",
+  "Processed ≤1m": "proc1m",
+  "Processed >1m": "procGt1m",
+  "Closing": "closing",
+  "Avg Time": "avg",
+  "Median Time": "med",
+  "Pending Files": "activeNow",
+  "Pending >7d": "p7",
+  "Pending >15d": "p15",
+  "Pending >30d": "p30",
+  "Pending >60d": "p60",
+  "Pending >90d": "p90",
+  "Pending >120d": "p120"
+};
 
-    let INTERVALS = []; // computed handling intervals per (file, person)
-// ===== Load multiple JSON files via fetch =====
+function canonicalHeader(text){
+  return String(text || '')
+    .replace(/[▲▼]/g, '')   // remove arrows if present
+    .replace(/\s+/g,' ')     // collapse whitespace
+    .trim();
+}
+
+function compareRows(a, b, key, asc = true) {
+  const va = a[key];
+  const vb = b[key];
+
+  // Both null/undefined
+  if (va == null && vb == null) return 0;
+  if (va == null) return asc ? -1 : 1;
+  if (vb == null) return asc ? 1 : -1;
+
+  // If both numbers (or numeric strings) compare numerically
+  const na = typeof va === 'number' || (!isNaN(Number(va)) && va !== '');
+  const nb = typeof vb === 'number' || (!isNaN(Number(vb)) && vb !== '');
+
+  if (na && nb) {
+    const naNum = Number(va);
+    const nbNum = Number(vb);
+    if (naNum === nbNum) return 0;
+    return asc ? naNum - nbNum : nbNum - naNum;
+  }
+
+  // Fallback to string comparison
+  const sa = String(va).toLowerCase();
+  const sb = String(vb).toLowerCase();
+  return asc ? sa.localeCompare(sb) : sb.localeCompare(sa);
+}
+
+/* ===== Utilities ===== */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const fmt = (n) => n?.toLocaleString?.('en-IN') ?? String(n ?? '');
+const hours = (ms) => ms/36e5;
+const toHH = (h) => (isNaN(h)?'-': `${h.toFixed(2)} h`);
+const parseTS = (s) => s ? new Date(String(s).replace(' ', 'T')) : null; // handles +05:30
+const by = (k) => (a,b)=> (a[k] > b[k]) ? 1 : (a[k] < b[k]) ? -1 : 0;
+
+/* ===== State ===== */
+let MOVES = [];
+let IDMAP = new Map();
+let EMP_POSTS = new Map();
+let INTERVALS = [];
+
+/* ===== Load JSONs (unchanged) ===== */
 async function loadJSONFiles() {
   try {
-    // List all your movement JSON files
     const movementFiles = [
       "data_movements_part1.json",
       "data_movements_part2.json",
@@ -889,38 +952,31 @@ async function loadJSONFiles() {
       "data_movements_part8.json",
       "data_movements_part9.json",
       "data_movements_part10.json"
-      // ... add more files as needed
     ];
 
-    // Fetch all movement files in parallel
     const movesResArray = await Promise.all(
       movementFiles.map(file => fetch(file))
     );
-
-    // Parse all movement JSONs
     const movesArrays = await Promise.all(movesResArray.map(res => {
       if (!res.ok) throw new Error(`Failed to load ${res.url}`);
       return res.json();
     }));
-
-    // Flatten into a single array
     MOVES = movesArrays.flat();
 
-    // Fetch IDs normally
     const idsRes = await fetch("data_ids.json");
     if (!idsRes.ok) throw new Error("Failed to load data_ids.json");
     const list = await idsRes.json();
 
-    // Create lookup maps
     IDMAP = new Map(list.map(o => [Number(o.post_id), o]));
     EMP_POSTS = new Map(list.map(o => [Number(o.post_id), `${o.employee_name} • ${o.org_unit_name}`]));
 
     populateEmployeeFilter(list);
 
-    // Attach dropdown toggle after DOM is ready
     const dropdownHeader = document.querySelector('.dropdown-header');
     const dropdownBody = document.querySelector('.dropdown-body');
-    dropdownHeader.addEventListener('click', () => dropdownBody.classList.toggle('hidden'));
+    if (dropdownHeader && dropdownBody) {
+      dropdownHeader.addEventListener('click', () => dropdownBody.classList.toggle('hidden'));
+    }
 
     maybeInit();
     attachFilterListeners();
@@ -930,19 +986,13 @@ async function loadJSONFiles() {
   }
 }
 
-
-
 window.addEventListener("DOMContentLoaded", () => {
   showLoading();
-  // Let browser render popup first, then fetch data
   setTimeout(() => {
     loadJSONFiles();
   }, 50);
 });
 
-
-
-       
 function attachFilterListeners() {
   ["startDate","endDate","employeeSelect","subjectInput","compInput"].forEach(id=>{
     const el = document.getElementById(id);
@@ -952,64 +1002,57 @@ function attachFilterListeners() {
   });
 }
 
-    // ===== Core: Build handling intervals =====
-    // For each movement group (by Computer No), for each receiver R with read_on -> find the next movement where sender_post_id == R
-    function computeIntervals(){
-      INTERVALS = [];
-      const byFile = new Map();
-      for(const m of MOVES){
-        const k = m['Computer No'];
-        if(!byFile.has(k)) byFile.set(k, []);
-        byFile.get(k).push(m);
+/* ===== computeIntervals (unchanged) ===== */
+function computeIntervals(){
+  INTERVALS = [];
+  const byFile = new Map();
+  for(const m of MOVES){
+    const k = m['Computer No'];
+    if(!byFile.has(k)) byFile.set(k, []);
+    byFile.get(k).push(m);
+  }
+  for(const [fileNo, arr] of byFile){
+    arr.sort((a,b)=> parseTS(a.sent_on) - parseTS(b.sent_on));
+    for(let i=0;i<arr.length;i++){
+      const rec = arr[i];
+      const holder = Number(rec.receiver_post_id);
+      const start = parseTS(rec.read_on);
+      if(!start || !holder) continue;
+      let end = null; let sendRec = null;
+      for(let j=i;j<arr.length;j++){
+        if(Number(arr[j].sender_post_id) === holder){ end = parseTS(arr[j].sent_on); sendRec = arr[j]; break; }
       }
-      for(const [fileNo, arr] of byFile){
-        // sort by sent_on ascending
-        arr.sort((a,b)=> parseTS(a.sent_on) - parseTS(b.sent_on));
-        // pre-index by sender for fast next lookup
-        for(let i=0;i<arr.length;i++){
-          const rec = arr[i];
-          const holder = Number(rec.receiver_post_id);
-          const start = parseTS(rec.read_on);
-          if(!start || !holder) continue; // skip if missing read_on
-          // find the first j>=i where sender_post_id == holder
-          let end = null; let sendRec = null;
-          for(let j=i;j<arr.length;j++){
-            if(Number(arr[j].sender_post_id) === holder){ end = parseTS(arr[j].sent_on); sendRec = arr[j]; break; }
-          }
-          const subject = rec.subject_description || (sendRec && sendRec.subject_description) || '';
-          INTERVALS.push({
-            fileNo,
-            subject,
-            holderPostId: holder,
-            holder: IDMAP.get(holder)?.employee_name || `Unknown (ID:${holder})`,
-            postName: IDMAP.get(holder)?.post_name || '',
-            orgUnit: IDMAP.get(holder)?.org_unit_name || '',
-            start, // when receiver read it
-            end,   // when same person sent it next (may be null => still pending)
-          });
-        }
-      }
-      // de-duplicate potential duplicates where same receiver appears consecutively with same next send
-      INTERVALS = INTERVALS.filter((v,i,a)=> i===a.findIndex(t=> t.fileNo===v.fileNo && t.holderPostId===v.holderPostId && t.start?.getTime()===v.start?.getTime() && (t.end?.getTime()||0)===(v.end?.getTime()||0)) );
+      const subject = rec.subject_description || (sendRec && sendRec.subject_description) || '';
+      INTERVALS.push({
+        fileNo,
+        subject,
+        holderPostId: holder,
+        holder: IDMAP.get(holder)?.employee_name || `Unknown (ID:${holder})`,
+        postName: IDMAP.get(holder)?.post_name || '',
+        orgUnit: IDMAP.get(holder)?.org_unit_name || '',
+        start,
+        end,
+      });
     }
+  }
+  INTERVALS = INTERVALS.filter((v,i,a)=> i===a.findIndex(t=> t.fileNo===v.fileNo && t.holderPostId===v.holderPostId && t.start?.getTime()===v.start?.getTime() && (t.end?.getTime()||0)===(v.end?.getTime()||0)) );
+}
 
-    // ===== Filters =====
-    function setDefaultDates(){
-      // if movements exist, set default to last 30 days over the dataset
-      const times = MOVES.map(m=>parseTS(m.sent_on)?.getTime()).filter(Boolean).sort((a,b)=>a-b);
-      if(!times.length) return;
-      const min = new Date(times[0]);
-      const max = new Date(times[times.length-1]);
-      const end = new Date(max);
-      const start = new Date(min);
-      $('#startDate').value = toYMD(start);
-      $('#endDate').value = toYMD(end);
-    }
-    const toYMD = d=> d? new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10): '';
+/* ===== Filters and helpers (unchanged) ===== */
+function setDefaultDates(){
+  const times = MOVES.map(m=>parseTS(m.sent_on)?.getTime()).filter(Boolean).sort((a,b)=>a-b);
+  if(!times.length) return;
+  const min = new Date(times[0]);
+  const max = new Date(times[times.length-1]);
+  $('#startDate').value = toYMD(min);
+  $('#endDate').value = toYMD(max);
+}
+const toYMD = d=> d? new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10): '';
 
-    function populateEmployeeFilter(list) {
+function populateEmployeeFilter(list) {
   const container = document.getElementById('employeeSelect');
-  container.innerHTML = ''; // clear existing
+  if(!container) return;
+  container.innerHTML = '';
 
   const uniqEmp = [...new Set(list.map(o => o.employee_name))]
                     .filter(n => n && n.trim() !== "")
@@ -1024,26 +1067,22 @@ function attachFilterListeners() {
     container.appendChild(label);
   });
 
-  // Attach change event
   container.querySelectorAll('input[type=checkbox]').forEach(cb => {
     cb.addEventListener('change', applyFilters);
   });
 }
 
-
-// Select/Deselect All
-document.getElementById('selectAllEmp').addEventListener('click', () => {
+document.getElementById('selectAllEmp')?.addEventListener('click', () => {
   document.querySelectorAll('#employeeSelect input[type=checkbox]').forEach(cb => cb.checked = true);
   applyFilters();
 });
 
-document.getElementById('deselectAllEmp').addEventListener('click', () => {
+document.getElementById('deselectAllEmp')?.addEventListener('click', () => {
   document.querySelectorAll('#employeeSelect input[type=checkbox]').forEach(cb => cb.checked = false);
   applyFilters();
 });
 
-// Search filter
-document.getElementById('searchEmp').addEventListener('input', e => {
+document.getElementById('searchEmp')?.addEventListener('input', e => {
   const search = e.target.value.toLowerCase();
   document.querySelectorAll('#employeeSelect label').forEach(label => {
     const name = label.textContent.toLowerCase();
@@ -1051,40 +1090,32 @@ document.getElementById('searchEmp').addEventListener('input', e => {
   });
 });
 
-
-
-// Get currently selected employees from checkboxes
 function getSelectedEmployees() {
   return [...document.querySelectorAll('#employeeSelect input[type=checkbox]:checked')]
            .map(cb => cb.value);
 }
 
-
-// Update filter logic
 function applyFilters(){
-  const sDate = $('#startDate').value ? new Date($('#startDate').value+'T00:00:00') : null;
-  const eDate = $('#endDate').value ? new Date($('#endDate').value+'T23:59:59') : null;
-  const empSelected = getSelectedEmployees(); // multi-select
-  const subj = $('#subjectInput').value.trim().toLowerCase();
-  const comp = $('#compInput').value.trim();
-  
+  const sDate = $('#startDate')?.value ? new Date($('#startDate').value+'T00:00:00') : null;
+  const eDate = $('#endDate')?.value ? new Date($('#endDate').value+'T23:59:59') : null;
+  const empSelected = getSelectedEmployees();
+  const subj = $('#subjectInput')?.value.trim().toLowerCase() || '';
+  const comp = $('#compInput')?.value.trim() || '';
 
   const filtered = INTERVALS.filter(v=>{
     if(empSelected.length && !empSelected.includes(v.holder)) return false;
     if(subj && !String(v.subject||'').toLowerCase().includes(subj)) return false;
     if(comp && String(v.fileNo) !== comp) return false;
-    
     return true;
   });
 
   const rows = aggregateByEmployee(filtered, sDate, eDate);
   render(rows, sDate, eDate);
-  computePendingAges(filtered); // pass filtered intervals for pending calculation
+  computePendingAges(filtered);
 }
 
-
-
-    function fmtDuration(ms) {
+/* ===== aggregation (unchanged) ===== */
+function fmtDuration(ms) {
   if (!isFinite(ms)) return '';
   let totalMins = Math.floor(ms / (1000 * 60));
   const days = Math.floor(totalMins / (60 * 24));
@@ -1114,16 +1145,11 @@ function aggregateByEmployee(list, sDate, eDate){
     const ints = obj.intervals;
     let opening=0, received=0, processed=0, closing=0;
     let activeNow=0;
-
-    // pending buckets
     let p7=0,p15=0,p30=0,p60=0,p90=0,p120=0;
-
     const procDurations=[];
-
     for(const iv of ints){
       const st=iv.start, en=iv.end;
 
-      // ---- opening/received/processed ----
       const startedBefore = sDate ? (st && st < sDate) : false;
       const endsBefore    = sDate ? (en && en < sDate) : false;
       const overlapsStart = sDate ? (st && !endsBefore && (startedBefore || st <= sDate)) : false;
@@ -1138,10 +1164,8 @@ function aggregateByEmployee(list, sDate, eDate){
         }
       }
 
-      // ---- Active files ----
       if(!en) activeNow++;
 
-      // ---- Pending bucket logic ----
       if(!en && st){
         const days = (now - st)/(1000*60*60*24);
         if (days > 7 && days <= 15) p7++;
@@ -1153,7 +1177,6 @@ function aggregateByEmployee(list, sDate, eDate){
       }
     }
 
-    // processing-time buckets
     const proc1d   = procDurations.filter(d=>d <= 1*24*60*60*1000).length;
     const proc2d   = procDurations.filter(d=>d > 1*24*60*60*1000 && d <= 2*24*60*60*1000).length;
     const proc3d   = procDurations.filter(d=>d > 2*24*60*60*1000 && d <= 3*24*60*60*1000).length;
@@ -1161,7 +1184,6 @@ function aggregateByEmployee(list, sDate, eDate){
     const proc1m   = procDurations.filter(d=>d > 7*24*60*60*1000 && d <= 30*24*60*60*1000).length;
     const procGt1m = procDurations.filter(d=>d > 30*24*60*60*1000).length;
 
-    // avg & median
     const avgMs = procDurations.length ? procDurations.reduce((a,b)=>a+b,0)/procDurations.length : NaN;
     const medMs = procDurations.length ? median(procDurations) : NaN;
 
@@ -1182,7 +1204,6 @@ function aggregateByEmployee(list, sDate, eDate){
   return rows;
 }
 
-
 const median = (arr)=>{
   const a = [...arr].sort((x,y)=>x-y); 
   const n = a.length; 
@@ -1191,12 +1212,23 @@ const median = (arr)=>{
   return n%2? a[m] : (a[m-1]+a[m])/2;
 };
 
+/* ===== Render with sorting ===== */
 function render(rows, sDate, eDate){
   const tbody = $('#tbody');
+  if(!tbody) return;
   tbody.innerHTML = '';
   let totOpen=0, totRecv=0, totProc=0, totClose=0; 
   let totProc1d=0, totProc2d=0, totProc3d=0, totProc1w=0, totProc1m=0, totProcGt1m=0;
   const allDur=[];
+
+  // Apply column sort if requested
+  if (currentSort.column) {
+    const colLabel = canonicalHeader(currentSort.column);
+    const key = HEADER_KEY_MAP[colLabel];
+    if (key) {
+      rows.sort((a,b) => compareRows(a,b,key,currentSort.asc));
+    }
+  }
 
   for(const r of rows){
     totOpen+=r.opening; 
@@ -1218,50 +1250,50 @@ function render(rows, sDate, eDate){
     }
 
     const tr = document.createElement('tr');
-tr.innerHTML = `
-  <td data-label="Employee"><span>${r.employee}</span></td>
-  <td data-label="Opening" class="number"><span class="link">${fmt(r.opening)}</span></td>
-  <td data-label="Received" class="number"><span class="link">${fmt(r.received)}</span></td>
-  <td data-label="Processed" class="number"><span class="link">${fmt(r.processed)}</span></td>
-  <td data-label="≤1d" class="number"><span class="link">${fmt(r.proc1d)}</span></td>
-  <td data-label="≤2d" class="number"><span class="link">${fmt(r.proc2d)}</span></td>
-  <td data-label="≤3d" class="number"><span class="link">${fmt(r.proc3d)}</span></td>
-  <td data-label="≤1w" class="number"><span class="link">${fmt(r.proc1w)}</span></td>
-  <td data-label="≤1m" class="number"><span class="link">${fmt(r.proc1m)}</span></td>
-  <td data-label=">1m" class="number"><span class="link">${fmt(r.procGt1m)}</span></td>
-  <td data-label="Closing" class="number"><span class="link">${fmt(r.closing)}</span></td>
-  <td data-label="Avg Time" class="number">${isFinite(r.avg) ? fmtDuration(r.avg) : ''}</td>
-  <td data-label="Median Time" class="number">${isFinite(r.med) ? fmtDuration(r.med) : ''}</td>
-  <td data-label="Active" class="number"><span class="link">${fmt(r.activeNow)}</span></td>
-  <td data-label=">7d" class="number"><span class="link">${fmt(r.p7)}</span></td>
-  <td data-label=">15d" class="number"><span class="link">${fmt(r.p15)}</span></td>
-  <td data-label=">30d" class="number"><span class="link">${fmt(r.p30)}</span></td>
-  <td data-label=">60d" class="number"><span class="link">${fmt(r.p60)}</span></td>
-  <td data-label=">90d" class="number"><span class="link">${fmt(r.p90)}</span></td>
-  <td data-label=">120d" class="number"><span class="link">${fmt(r.p120)}</span></td>
-`;
+    tr.innerHTML = `
+      <td data-label="Minister's Name"><span>${escapeHTML(r.employee)}</span></td>
+      <td data-label="Opening" class="number"><span class="link">${fmt(r.opening)}</span></td>
+      <td data-label="Received" class="number"><span class="link">${fmt(r.received)}</span></td>
+      <td data-label="Processed" class="number"><span class="link">${fmt(r.processed)}</span></td>
+      <td data-label="Processed ≤1d" class="number"><span class="link">${fmt(r.proc1d)}</span></td>
+      <td data-label="Processed ≤2d" class="number"><span class="link">${fmt(r.proc2d)}</span></td>
+      <td data-label="Processed ≤3d" class="number"><span class="link">${fmt(r.proc3d)}</span></td>
+      <td data-label="Processed ≤1w" class="number"><span class="link">${fmt(r.proc1w)}</span></td>
+      <td data-label="Processed ≤1m" class="number"><span class="link">${fmt(r.proc1m)}</span></td>
+      <td data-label="Processed >1m" class="number"><span class="link">${fmt(r.procGt1m)}</span></td>
+      <td data-label="Closing" class="number"><span class="link">${fmt(r.closing)}</span></td>
+      <td data-label="Avg Time" class="number">${isFinite(r.avg) ? fmtDuration(r.avg) : ''}</td>
+      <td data-label="Median Time" class="number">${isFinite(r.med) ? fmtDuration(r.med) : ''}</td>
+      <td data-label="Pending Files" class="number"><span class="link">${fmt(r.activeNow)}</span></td>
+      <td data-label="Pending >7d" class="number"><span class="link">${fmt(r.p7)}</span></td>
+      <td data-label="Pending >15d" class="number"><span class="link">${fmt(r.p15)}</span></td>
+      <td data-label="Pending >30d" class="number"><span class="link">${fmt(r.p30)}</span></td>
+      <td data-label="Pending >60d" class="number"><span class="link">${fmt(r.p60)}</span></td>
+      <td data-label="Pending >90d" class="number"><span class="link">${fmt(r.p90)}</span></td>
+      <td data-label="Pending >120d" class="number"><span class="link">${fmt(r.p120)}</span></td>
+    `;
+    tbody.appendChild(tr);
 
-tbody.appendChild(tr);
+    // attach drill click
+    tr.querySelectorAll('.link').forEach(span => {
+      span.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const col = span.parentElement.dataset.label;
+        const sDate = $('#startDate')?.value ? new Date($('#startDate').value+'T00:00:00') : null;
+        const eDate = $('#endDate')?.value ? new Date($('#endDate').value+'T23:59:59') : null;
+        const empSelected = getSelectedEmployees();
+        const subj = $('#subjectInput')?.value.trim().toLowerCase() || '';
+        const comp = $('#compInput')?.value.trim() || '';
+        openDrill(r.employee, col, { sDate, eDate, empSelected, subj, comp });
+      });
+    });
+  } // end rows loop
 
-// attach click only to the .link spans (numeric values), skip Avg/Median
-tr.querySelectorAll('.link').forEach(span => {
-  span.addEventListener('click', ev => {
-    ev.stopPropagation(); // prevent row click
-    const col = span.parentElement.dataset.label;
-
-    // gather current filter values
-    const sDate = $('#startDate').value ? new Date($('#startDate').value+'T00:00:00') : null;
-    const eDate = $('#endDate').value ? new Date($('#endDate').value+'T23:59:59') : null;
-    const empSelected = getSelectedEmployees(); // multi-select
-    const subj = $('#subjectInput').value.trim().toLowerCase();
-    const comp = $('#compInput').value.trim();
-
-    openDrill(r.employee, col, { sDate, eDate, empSelected, subj, comp });
+  // update header arrows once (after rows creation)
+  document.querySelectorAll("thead th").forEach(th => {
+    const base = canonicalHeader(th.textContent);
+    th.textContent = base + ((currentSort.column && base === canonicalHeader(currentSort.column)) ? (currentSort.asc ? " ▲" : " ▼") : "");
   });
-});
-
-
-  }
 
   $('#countInfo').textContent = `${rows.length} employees`;
 
@@ -1292,29 +1324,23 @@ tr.querySelectorAll('.link').forEach(span => {
   computePendingAges();
 }
 
+/* ===== dateHint, drilldown etc. (unchanged except small safety) ===== */
+function dateHint(prefix, a, b){
+  const f = d=> d? d.toLocaleDateString('en-GB') : '-';
+  return b? `${prefix} ${f(a)}–${f(b)}`: `${prefix} ${f(a)}`;
+}
 
-
-    function dateHint(prefix, a, b){
-      const f = d=> d? d.toLocaleDateString('en-GB') : '-';
-      return b? `${prefix} ${f(a)}–${f(b)}`: `${prefix} ${f(a)}`;
-    }
-
-    // ===== Drilldown =====
-    function openDrill(employee, metric, filters){
+function openDrill(employee, metric, filters){
   $('#modalTitle').textContent = `${employee} — ${metric}`;
   const box = $('#detailRows'); 
   box.innerHTML = '';
-
   const maxDate = filters.eDate || new Date(); 
 
   const filteredIntervals = INTERVALS.filter(iv=>{
     if(iv.holder !== employee) return false;
-
-    // Apply general filters
     if(filters.subj && !String(iv.subject||'').toLowerCase().includes(filters.subj)) return false;
     if(filters.comp && String(iv.fileNo) !== filters.comp) return false;
 
-    // Metric-specific logic
     switch(metric){
       case 'Opening': 
         return filters.sDate && iv.start && iv.start < filters.sDate;
@@ -1322,37 +1348,36 @@ tr.querySelectorAll('.link').forEach(span => {
         return filters.sDate && filters.eDate && iv.start && iv.start >= filters.sDate && iv.start <= filters.eDate;
       case 'Processed': 
         return filters.sDate && filters.eDate && iv.end && iv.end >= filters.sDate && iv.end <= filters.eDate;
-      case 'Active': 
+      case 'Pending Files': 
         return !iv.end;
-      case '≤1d': 
+      case 'Processed ≤1d': 
         return iv.end && (iv.end - iv.start) <= 1*24*60*60*1000;
-      case '≤2d': 
+      case 'Processed ≤2d': 
         return iv.end && (iv.end - iv.start) > 1*24*60*60*1000 && (iv.end - iv.start) <= 2*24*60*60*1000;
-      case '≤3d': 
+      case 'Processed ≤3d': 
         return iv.end && (iv.end - iv.start) > 2*24*60*60*1000 && (iv.end - iv.start) <= 3*24*60*60*1000;
-      case '≤1w': 
+      case 'Processed ≤1w': 
         return iv.end && (iv.end - iv.start) > 3*24*60*60*1000 && (iv.end - iv.start) <= 7*24*60*60*1000;
-      case '≤1m': 
+      case 'Processed ≤1m': 
         return iv.end && (iv.end - iv.start) > 7*24*60*60*1000 && (iv.end - iv.start) <= 30*24*60*60*1000;
-      case '>1m': 
+      case 'Processed >1m': 
         return iv.end && (iv.end - iv.start) > 30*24*60*60*1000;
-      case '>7d': case '>15d': case '>30d': case '>60d': case '>90d': case '>120d':
+      case 'Pending >7d': case 'Pending >15d': case 'Pending >30d': case 'Pending >60d': case 'Pending >90d': case 'Pending >120d':
         if(!iv.end && iv.start){
           const daysHeld = (maxDate - iv.start)/(1000*60*60*24);
-          if(metric === '>7d') return daysHeld > 7 && daysHeld <= 15;
-          if(metric === '>15d') return daysHeld > 15 && daysHeld <= 30;
-          if(metric === '>30d') return daysHeld > 30 && daysHeld <= 60;
-          if(metric === '>60d') return daysHeld > 60 && daysHeld <= 90;
-          if(metric === '>90d') return daysHeld > 90 && daysHeld <= 120;
-          if(metric === '>120d') return daysHeld > 120;
+          if(metric === 'Pending >7d') return daysHeld > 7 && daysHeld <= 15;
+          if(metric === 'Pending >15d') return daysHeld > 15 && daysHeld <= 30;
+          if(metric === 'Pending >30d') return daysHeld > 30 && daysHeld <= 60;
+          if(metric === 'Pending >60d') return daysHeld > 60 && daysHeld <= 90;
+          if(metric === 'Pending >90d') return daysHeld > 90 && daysHeld <= 120;
+          if(metric === 'Pending >120d') return daysHeld > 120;
         }
         return false;
       default: 
-        return false;  // fallback
+        return false;
     }
   });
 
-  // Sort descending by duration
   filteredIntervals.sort((a,b)=>{
     const durA = a.end ? a.end - a.start : maxDate - a.start;
     const durB = b.end ? b.end - b.start : maxDate - b.start;
@@ -1376,62 +1401,67 @@ tr.querySelectorAll('.link').forEach(span => {
   $('#modal').classList.add('open');
 }
 
+$('#btnClose')?.addEventListener('click', ()=> $('#modal').classList.remove('open'));
 
+/* ===== Safe CSV export (only hook up if button exists) ===== */
+const btnExport = $('#btnExport');
+if (btnExport) {
+  btnExport.addEventListener('click', ()=>{
+    const sDate = $('#startDate')?.value ? new Date($('#startDate').value+'T00:00:00') : null;
+    const eDate = $('#endDate')?.value ? new Date($('#endDate').value+'T23:59:59') : null;
+    const selectedEmps = getSelectedEmployees();
+    const emp = selectedEmps.length===1 ? selectedEmps[0] : '';
+    const subj = $('#subjectInput')?.value.trim().toLowerCase() || '';
+    const comp = $('#compInput')?.value.trim() || '';
+    const org = $('#orgInput')?.value.trim().toLowerCase() || '';
 
-    $('#btnClose').onclick = ()=> $('#modal').classList.remove('open');
-
-    // ===== Export CSV =====
-    $('#btnExport').addEventListener('click', ()=>{
-      const sDate = $('#startDate').value ? new Date($('#startDate').value+'T00:00:00') : null;
-      const eDate = $('#endDate').value ? new Date($('#endDate').value+'T23:59:59') : null;
-      const emp = $('#employeeSelect').value.trim();
-      const subj = $('#subjectInput').value.trim().toLowerCase();
-      const comp = $('#compInput').value.trim();
-      const org = $('#orgInput').value.trim().toLowerCase();
-      const filtered = INTERVALS.filter(v=>{
-        if(emp && v.holder !== emp) return false;
-        if(subj && !String(v.subject||'').toLowerCase().includes(subj)) return false;
-        if(comp && String(v.fileNo) !== comp) return false;
-        if(org && !String(v.orgUnit||'').toLowerCase().includes(org)) return false;
-        return true;
-      });
-      const rows = aggregateByEmployee(filtered, sDate, eDate);
-      const csv = ['Employee,Post,Org Unit,Opening,Received,Processed,Closing,Avg Hours,Median Hours,Active Files'].concat(
-        rows.map(r=>[
-          q(r.employee), q(r.post), q(r.org), r.opening, r.received, r.processed, r.closing, round(r.avg), round(r.med), r.activeNow
-        ].join(','))
-      ).join('\n');
-      const blob = new Blob([csv], {type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='file_clearance_kpis.csv'; a.click(); URL.revokeObjectURL(url);
+    const filtered = INTERVALS.filter(v=>{
+      if(emp && v.holder !== emp) return false;
+      if(subj && !String(v.subject||'').toLowerCase().includes(subj)) return false;
+      if(comp && String(v.fileNo) !== comp) return false;
+      if(org && !String(v.orgUnit||'').toLowerCase().includes(org)) return false;
+      return true;
     });
-    const q = s=> '"'+String(s??'').replace(/"/g,'""')+'"';
-    const round = v=> isFinite(v)? v.toFixed(2): '';
-    
-    function escapeHTML(s){
-      return String(s).replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-    }
+
+    const rows = aggregateByEmployee(filtered, sDate, eDate);
+
+    const csvHeader = ['Employee,Opening,Received,Processed,Closing,Avg Hours,Median Hours,Active Files'];
+    const csvRows = rows.map(r=> [
+      q(r.employee),
+      r.opening, r.received, r.processed, r.closing,
+      round(r.avg), round(r.med), r.activeNow
+    ].join(','));
+    const csv = csvHeader.concat(csvRows).join('\n');
+
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='file_clearance_kpis.csv'; a.click(); URL.revokeObjectURL(url);
+  });
+}
+const q = s=> '"'+String(s??'').replace(/"/g,'""')+'"';
+const round = v=> isFinite(v)? v.toFixed(2): '';
+
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+}
+
 function computePendingAges() {
   const now = new Date();
-const maxSent = MOVES.map(m => parseTS(m.sent_on)).filter(Boolean);
+  const maxSent = MOVES.map(m => parseTS(m.sent_on)).filter(Boolean);
   const maxDate = maxSent.length ? new Date(Math.max(...maxSent)) : now;
   const headerEl = document.getElementById('pendingHeader');
-  headerEl.textContent = `Status of files pending with Ministers as on ${maxDate.toLocaleDateString('en-GB')}`;
+  if (headerEl) headerEl.textContent = `Status of files pending with Ministers as on ${maxDate.toLocaleDateString('en-GB')}`;
 
   let p7 = 0, p15 = 0, p30 = 0, p60 = 0, p90 = 0, p120 = 0;
 
-  // Get selected employees from checkboxes
   const selectedEmps = [...document.querySelectorAll('#employeeSelect input[type=checkbox]:checked')]
                         .map(cb => cb.value.trim())
                         .filter(Boolean);
 
   for (const iv of INTERVALS) {
-    // Skip if not in selected employees
     if (selectedEmps.length && !selectedEmps.includes(iv.holder)) continue;
-
-    if (!iv.end && iv.start) {   // only unsent
+    if (!iv.end && iv.start) {
       const days = (now - iv.start) / (1000 * 60 * 60 * 24);
-
       if (days > 7 && days <= 15) p7++;
       else if (days > 15 && days <= 30) p15++;
       else if (days > 30 && days <= 60) p30++;
@@ -1441,7 +1471,6 @@ const maxSent = MOVES.map(m => parseTS(m.sent_on)).filter(Boolean);
     }
   }
 
-  // update widgets
   $('#k_p7').textContent = fmt(p7);
   $('#k_p15').textContent = fmt(p15);
   $('#k_p30').textContent = fmt(p30);
@@ -1450,8 +1479,7 @@ const maxSent = MOVES.map(m => parseTS(m.sent_on)).filter(Boolean);
   $('#k_p120').textContent = fmt(p120);
 }
 
-
-    // ===== Loading Popup Control =====
+/* ===== Loading controls & init ===== */
 function showLoading() {
   document.getElementById("loadingModal").style.display = "flex";
 }
@@ -1459,17 +1487,49 @@ function hideLoading() {
   document.getElementById("loadingModal").style.display = "none";
 }
 
-
-// Hide loader after init completes
 function maybeInit(){
   if(!MOVES.length || !IDMAP.size) return;
   computeIntervals();
   setDefaultDates();
   applyFilters();
-  hideLoading(); // hides popup after data ready
+  hideLoading();
+}
+
+/* ===== Attach header click listeners (safe) ===== */
+function initHeaderSorting() {
+  document.querySelectorAll("thead th").forEach(th => {
+    th.style.cursor = "pointer";
+    th.addEventListener("click", () => {
+      const col = canonicalHeader(th.textContent);
+      if (currentSort.column === col) {
+        currentSort.asc = !currentSort.asc;
+      } else {
+        currentSort.column = col;
+        currentSort.asc = true;
+      }
+      applyFilters();
+    });
+  });
+}
+// call it now (script at end of body) — safe even if headers are present
+initHeaderSorting();
+
+// ===== Table search filter =====
+const tableSearch = document.getElementById("tableSearch");
+if (tableSearch) {
+  tableSearch.addEventListener("input", () => {
+    const search = tableSearch.value.toLowerCase();
+    document.querySelectorAll("#tbody tr").forEach(tr => {
+      const empCell = tr.querySelector("td[data-label=\"Minister's Name\"]");
+      if (!empCell) return;
+      const emp = empCell.textContent.toLowerCase();
+      tr.style.display = emp.includes(search) ? "" : "none";
+    });
+  });
 }
 
 
-  </script>
+</script>
+
 </body>
 </html>
