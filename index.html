@@ -820,18 +820,18 @@ th:nth-child(20), td:nth-child(20) {
       <thead>
         <tr>
           <th>Minister's Name</th>
+          <th class="number">Avg Time</th>
+          <th class="number">Median Time</th>
           <th class="number">Opening</th>
           <th class="number">Received</th>
           <th class="number">Processed</th>
+          <th class="number">Closing</th>
           <th class="number">Processed ≤1d</th>
           <th class="number">Processed ≤2d</th>
           <th class="number">Processed ≤3d</th>
           <th class="number">Processed ≤1w</th>
           <th class="number">Processed ≤1m</th>
-          <th class="number">Processed &gt;1m</th>
-          <th class="number">Closing</th>
-          <th class="number">Avg Time</th>
-          <th class="number">Median Time</th>
+          <th class="number">Processed &gt;1m</th>          
           <th class="number">Pending Files</th>
           <th class="number">Pending &gt;7d</th>
           <th class="number">Pending &gt;15d</th>
@@ -869,18 +869,18 @@ let currentSort = { column: null, asc: true };
 
 const HEADER_KEY_MAP = {
   "Minister's Name": "employee",
+  "Avg Time": "avg",
+  "Median Time": "med",
   "Opening": "opening",
   "Received": "received",
   "Processed": "processed",
+  "Closing": "closing", 
   "Processed ≤1d": "proc1d",
   "Processed ≤2d": "proc2d",
   "Processed ≤3d": "proc3d",
   "Processed ≤1w": "proc1w",
   "Processed ≤1m": "proc1m",
-  "Processed >1m": "procGt1m",
-  "Closing": "closing",
-  "Avg Time": "avg",
-  "Median Time": "med",
+  "Processed >1m": "procGt1m",   
   "Pending Files": "activeNow",
   "Pending >7d": "p7",
   "Pending >15d": "p15",
@@ -1191,8 +1191,8 @@ function aggregateByEmployee(list, sDate, eDate){
 
     rows.push({
       employee: obj.employee,
-      opening, received, processed, closing,
       avg: avgMs, med: medMs,
+      opening, received, processed, closing,
       activeNow,
       p7,p15,p30,p60,p90,p120,
       proc1d,proc2d,proc3d,proc1w,proc1m,procGt1m,
@@ -1252,18 +1252,18 @@ function render(rows, sDate, eDate){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td data-label="Minister's Name"><span>${escapeHTML(r.employee)}</span></td>
+      <td data-label="Avg Time" class="number">${isFinite(r.avg) ? fmtDuration(r.avg) : ''}</td>
+      <td data-label="Median Time" class="number">${isFinite(r.med) ? fmtDuration(r.med) : ''}</td>
       <td data-label="Opening" class="number"><span class="link">${fmt(r.opening)}</span></td>
       <td data-label="Received" class="number"><span class="link">${fmt(r.received)}</span></td>
       <td data-label="Processed" class="number"><span class="link">${fmt(r.processed)}</span></td>
+      <td data-label="Closing" class="number"><span class="link">${fmt(r.closing)}</span></td>  
       <td data-label="Processed ≤1d" class="number"><span class="link">${fmt(r.proc1d)}</span></td>
       <td data-label="Processed ≤2d" class="number"><span class="link">${fmt(r.proc2d)}</span></td>
       <td data-label="Processed ≤3d" class="number"><span class="link">${fmt(r.proc3d)}</span></td>
       <td data-label="Processed ≤1w" class="number"><span class="link">${fmt(r.proc1w)}</span></td>
       <td data-label="Processed ≤1m" class="number"><span class="link">${fmt(r.proc1m)}</span></td>
-      <td data-label="Processed >1m" class="number"><span class="link">${fmt(r.procGt1m)}</span></td>
-      <td data-label="Closing" class="number"><span class="link">${fmt(r.closing)}</span></td>
-      <td data-label="Avg Time" class="number">${isFinite(r.avg) ? fmtDuration(r.avg) : ''}</td>
-      <td data-label="Median Time" class="number">${isFinite(r.med) ? fmtDuration(r.med) : ''}</td>
+      <td data-label="Processed >1m" class="number"><span class="link">${fmt(r.procGt1m)}</span></td>          
       <td data-label="Pending Files" class="number"><span class="link">${fmt(r.activeNow)}</span></td>
       <td data-label="Pending >7d" class="number"><span class="link">${fmt(r.p7)}</span></td>
       <td data-label="Pending >15d" class="number"><span class="link">${fmt(r.p15)}</span></td>
@@ -1533,4 +1533,3 @@ if (tableSearch) {
 
 </body>
 </html>
-
