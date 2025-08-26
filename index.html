@@ -1016,7 +1016,7 @@ function computeIntervals(){
     for(let i=0;i<arr.length;i++){
       const rec = arr[i];
       const holder = Number(rec.receiver_post_id);
-      const start = parseTS(rec.sent_on);
+      const start = parseTS(rec.read_on);
       if(!start || !holder) continue;
       let end = null; let sendRec = null;
       for(let j=i;j<arr.length;j++){
@@ -1533,6 +1533,7 @@ if (tableSearch) {
 
 </body>
 </html>
+
 
 
 
