@@ -942,16 +942,17 @@ let INTERVALS = [];
 async function loadJSONFiles() {
   try {
     const movementFiles = [
-      "data_movements_26.08.25_part1.json",
-      "data_movements_26.08.25_part2.json",
-      "data_movements_26.08.25_part3.json",
-      "data_movements_26.08.25_part4.json",
-      "data_movements_26.08.25_part5.json",
-      "data_movements_26.08.25_part6.json",
-      "data_movements_26.08.25_part7.json",
-      "data_movements_26.08.25_part8.json",
-      "data_movements_26.08.25_part9.json",
-      "data_movements_26.08.25_part10.json"
+      
+      "data_movements_27.08.25_part1.json",
+      "data_movements_27.08.25_part2.json",
+      "data_movements_27.08.25_part3.json",
+      "data_movements_27.08.25_part4.json",
+      "data_movements_27.08.25_part5.json",
+      "data_movements_27.08.25_part6.json",
+      "data_movements_27.08.25_part7.json",
+      "data_movements_27.08.25_part8.json",
+      "data_movements_27.08.25_part9.json",
+      "data_movements_27.08.25_part10.json"
     ];
 
     const movesResArray = await Promise.all(
@@ -1016,7 +1017,7 @@ function computeIntervals(){
     for(let i=0;i<arr.length;i++){
       const rec = arr[i];
       const holder = Number(rec.receiver_post_id);
-      const start = parseTS(rec.read_on);
+      const start = parseTS(rec.sent_on);
       if(!start || !holder) continue;
       let end = null; let sendRec = null;
       for(let j=i;j<arr.length;j++){
@@ -1028,8 +1029,6 @@ function computeIntervals(){
         subject,
         holderPostId: holder,
         holder: IDMAP.get(holder)?.employee_name || `Unknown (ID:${holder})`,
-        postName: IDMAP.get(holder)?.post_name || '',
-        orgUnit: IDMAP.get(holder)?.org_unit_name || '',
         start,
         end,
       });
@@ -1533,7 +1532,3 @@ if (tableSearch) {
 
 </body>
 </html>
-
-
-
-
